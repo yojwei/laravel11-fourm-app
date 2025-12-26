@@ -17,4 +17,21 @@ export default defineConfig({
             },
         }),
     ],
+    server: {
+        host: '0.0.0.0',        // Docker access
+        port: 5173,
+        strictPort: true,
+
+        // THIS is the key for forum.test
+        hmr: {
+            host: 'forum.test',
+            protocol: 'ws',
+            port: 5173,
+        },
+
+        // Allow custom domain
+        allowedHosts: [
+            'forum.test',
+        ],
+    },
 });
