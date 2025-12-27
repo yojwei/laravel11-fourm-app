@@ -58,7 +58,8 @@ const menu = [
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-9 w-auto" />
+                                    <img src="/assets/ho-yo.svg" alt="Ho Yo Logo"
+                                        class="h-16 w-auto text-white lg:text-[#FF2D20]" />
                                 </Link>
                             </div>
 
