@@ -1,8 +1,9 @@
 <script setup>
+import Pagination from '@/Components/Pagination.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({
-    'posts': Array,
+    'posts': Object,
 });
 </script>
 
@@ -18,10 +19,11 @@ defineProps({
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="text-2xl font-bold mb-4">Posts</h1>
                     <ul class="divide-y">
-                        <li v-for="post in posts" :key="post.id" class="px-2 py-4">
+                        <li v-for="post in posts.data" :key="post.id" class="px-2 py-4">
                             <span class="font-bold text-lg">{{ post.title }}</span>
                         </li>
                     </ul>
+                    <Pagination :meta="posts.meta" class="mt-6 flex justify-center" />
                 </div>
             </div>
         </div>
