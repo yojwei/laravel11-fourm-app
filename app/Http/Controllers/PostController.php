@@ -15,4 +15,13 @@ class PostController extends Controller
             'posts' => PostResource::collection(Post::latest()->latest('id')->paginate()),
         ]);
     }
+
+    public function show(Post $post)
+    {
+        $post->load('user');
+
+        return inertia('Post/Show', [
+            'post' => PostResource::make($post),
+        ]);
+    }
 }
