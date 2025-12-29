@@ -5,8 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Arr;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
+use PHPUnit\Framework\Assert;
 
 /**
  * 測試服務提供者
@@ -40,51 +42,29 @@ class TestingServiceProvider extends ServiceProvider
         }
 
         AssertableInertia::macro('hasResource', function (string $key, JsonResource $resource) {
-            // 從 Inertia 視圖中獲取所有傳遞的屬性
-            $props = $this->toArray()['props'];
+            // 確保指定的 key 存在於傳遞給 Inertia 的屬性中
+            Assert::assertTrue(Arr::has($this->prop(), $key));
 
-            // 將資源編譯為陣列格式（使用相同的序列化方式作為檢測）
+            // 確保資源的內容與預期的資源完全匹配
             $compiledResource = $resource->response()->getData(true);
-
-            // 斷言：確保指定的 key 存在於傳遞給 Inertia 的屬性中
-            \PHPUnit\Framework\Assert::assertArrayHasKey($key, $props, "Key {$key} not passed as a property to Inertia");
-
-            // 斷言：確保資源的內容與預期的資源完全匹配
-            \PHPUnit\Framework\Assert::assertEquals(
-                $compiledResource,
-                $props[$key],
-                "The resource for key {$key} does not match the expected resource."
-            );
+            Assert::assertEquals($compiledResource, $this->prop($key));
 
             // 回傳 $this 以支援鏈式呼叫
             return $this;
         });
 
-        AssertableInertia::macro('hasPaginatedResource', function (string $key, ResourceCollection $resource) {
-            // 從 Inertia 視圖中獲取所有傳遞的屬性
-            $props = $this->toArray()['props'];
+        AssertableInertia::macro('hasPaginatedResource', function (string $key, JsonResource $resourceCollection) {
+            // 確保指定的 key 存在於傳遞給 Inertia 的屬性中
+            Assert::assertTrue(Arr::has($this->prop(), $key));
 
-            // 將分頁資源編譯為陣列格式
-            $compiledResource = $resource->response()->getData(true);
+            // 確保分頁資源的 data 鍵存在
+            Assert::assertTrue(Arr::has($this->prop(), "{$key}.data"));
 
-            // 斷言：確保指定的 key 存在於傳遞給 Inertia 的屬性中
-            \PHPUnit\Framework\Assert::assertArrayHasKey($key, $props, "Key {$key} not passed as a property to Inertia");
+            // 驗證分頁資源具有必要的結構：data（資料）、links（分頁連結）、meta（元資料）
+            Assert::assertEqualsCanonicalizing(['data', 'links', 'meta'], array_keys($this->prop($key)));
 
-            // 驗證分頁資源應該具有的必要結構：data（資料）、links（分頁連結）、meta（元資料）
-            foreach (['data', 'links', 'meta'] as $propKey) {
-                \PHPUnit\Framework\Assert::assertArrayHasKey($propKey, $props[$key], "The paginated resource for key {$key} does not have the expected structure.");
-            }
-
-            // 斷言：確保資源的資料部分（data key）與預期的資源完全匹配
-            // 注意：分頁資源的實際資料存儲在 'data' 鍵下，而不是頂層
-            \PHPUnit\Framework\Assert::assertEquals(
-                $compiledResource,
-                $props[$key]['data'],
-                "The resource for key {$key} does not match the expected resource."
-            );
-
-            // 回傳 $this 以支援鏈式呼叫
-            return $this;
+            // 驗證 data 部分的資源內容是否與預期的資源完全匹配
+            return $this->hasResource("{$key}.data", $resourceCollection);
         });
 
         /**
