@@ -23,6 +23,7 @@ class IndexTest extends TestCase
     public function test_should_passes_posts_to_view()
     {
         $posts = Post::factory(3)->create();
+        $posts->load('user');
 
         $response = $this->get(route('posts.index'));
         $response->assertHasPaginatedResource('posts', PostResource::collection($posts->reverse()));
