@@ -223,9 +223,11 @@ const menu = [
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
                     class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
+                        <template v-for="item in menu" :key="item.name">
+                            <ResponsiveNavLink v-if="item.when()" :href="item.url" :active="route().current(item.root)">
+                                {{ item.name }}
+                            </ResponsiveNavLink>
+                        </template>
                     </div>
 
                     <!-- Responsive Settings Options -->
