@@ -25,14 +25,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 建立 200 篇貼文，並將其關聯到現有的用戶
-        $posts = Post::factory(200)
+        Post::factory(200)
+            ->has(Comment::factory(18)->recycle($users))
             ->recycle($users)
-            ->create();
-
-        // 建立 500 則評論，並將其關聯到現有的用戶和貼文
-        Comment::factory(500)
-            ->recycle($users)
-            ->recycle($posts)
             ->create();
     }
 }
