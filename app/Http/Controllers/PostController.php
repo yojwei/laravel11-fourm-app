@@ -13,7 +13,7 @@ class PostController extends Controller
     public function index()
     {
         return inertia('Post/Index', [
-            'posts' => PostResource::collection(Post::with('user')->latest()->latest('id')->paginate()),
+            'posts' => fn() => PostResource::collection(Post::with('user')->latest()->latest('id')->paginate()),
         ]);
     }
 
@@ -22,8 +22,8 @@ class PostController extends Controller
         $post->load('user');
 
         return inertia('Post/Show', [
-            'post' => PostResource::make($post),
-            'comments' => CommentResource::collection($post->comments()->with('user')->latest()->latest('id')->paginate(10)),
+            'post' => fn() => PostResource::make($post),
+            'comments' => fn() => CommentResource::collection($post->comments()->with('user')->latest()->latest('id')->paginate(10)),
         ]);
     }
 }
