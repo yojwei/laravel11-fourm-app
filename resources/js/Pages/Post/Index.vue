@@ -34,7 +34,7 @@ const formattedDate = (date) => { return relativeDate(date); };
                         </Link>
                     </li>
                 </ul>
-                <Pagination :meta="posts.meta" class="mt-6 flex justify-center" />
+                <Pagination :meta="posts.meta" :only="['posts']" class="mt-6 flex justify-center" />
             </div>
         </Container>
     </AppLayout>

@@ -44,7 +44,7 @@ const lines = computed(() => {
                             <Comment :comment="comment" />
                         </li>
                     </ul>
-                    <Pagination :meta="comments.meta" class="mt-6 flex justify-center" />
+                    <Pagination :meta="comments.meta" :only="['comments']" class="mt-6 flex justify-center" />
                 </div>
             </div>
         </Container>
