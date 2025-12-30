@@ -3,15 +3,13 @@ import Container from '@/Components/Container.vue';
 import Pagination from '@/Components/Pagination.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { DateTime } from "luxon";
+import { relativeDate } from "@/Utilities/date.js";
 
 defineProps({
     'posts': Object,
 });
 
-const formattedDate = (date) => {
-    return DateTime.fromISO(date).toRelative({ locale: 'en' });
-};
+const formattedDate = (date) => { return relativeDate(date); };
 </script>
 
 <template>
