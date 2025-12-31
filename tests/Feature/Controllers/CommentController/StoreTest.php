@@ -45,4 +45,31 @@ class StoreTest extends TestCase
         ])
             ->assertRedirect(route('posts.show', $post));
     }
+
+    /**
+     * @dataProvider invalidBodyProvider
+     */
+    public function test_it_requires_a_valid_body($value): void
+    {
+        $this->withExceptionHandling();
+        $post = Post::factory()->create();
+
+        $this->actingAs(User::factory()->create())
+            ->post(route('posts.comments.store', $post), [
+                'body' => $value,
+            ])
+            ->assertInvalid('body');
+    }
+
+
+    public static function invalidBodyProvider(): array
+    {
+        return [
+            'body 是 null' => [null],
+            'body 是 整數' => [1],
+            'body 是 浮點數' => [1.5],
+            'body 是 布林值' => [true],
+            'body 超過 2500 字' => [str_repeat('a', 2501)],
+        ];
+    }
 }
