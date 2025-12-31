@@ -11,6 +11,10 @@ class Comment extends Model
     /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'body',
+    ];
+
     /**
      * Get the user that owns the Post
      *
