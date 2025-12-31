@@ -27,4 +27,18 @@ class StoreTest extends TestCase
             'user_id' => $user->id,
         ]);
     }
+
+    public function test_store_should_redirect_to_show_page()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+        $post = Post::factory()->create();
+
+        $this->actingAs($user)->post(route('posts.comments.store', $post), [
+            'body' => 'This is a comment',
+        ])
+
+            ->assertRedirect(route('posts.show', $post));
+    }
 }
