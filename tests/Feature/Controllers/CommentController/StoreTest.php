@@ -10,35 +10,39 @@ use Tests\TestCase;
 
 class StoreTest extends TestCase
 {
-    public function test_can_store_a_comment()
+    protected $user;
+
+    protected function setUp(): void
     {
+        parent::setUp();
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->create();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    }
+
+    public function test_can_store_a_comment()
+    {
         $post = Post::factory()->create();
 
-        $this->actingAs($user)->post(route('posts.comments.store', $post), [
+        $this->post(route('posts.comments.store', $post), [
             'body' => 'This is a comment',
         ]);
 
         $this->assertDatabaseHas('comments', [
             'body' => 'This is a comment',
             'post_id' => $post->id,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
     }
 
     public function test_store_should_redirect_to_show_page()
     {
-        $this->withoutExceptionHandling();
-
-        $user = User::factory()->create();
         $post = Post::factory()->create();
 
-        $this->actingAs($user)->post(route('posts.comments.store', $post), [
+        $this->post(route('posts.comments.store', $post), [
             'body' => 'This is a comment',
         ])
-
             ->assertRedirect(route('posts.show', $post));
     }
 }
