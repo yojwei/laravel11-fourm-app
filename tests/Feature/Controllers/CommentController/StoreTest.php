@@ -10,20 +10,24 @@ use Tests\TestCase;
 
 class StoreTest extends TestCase
 {
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
         $this->withoutExceptionHandling();
+    }
 
-        $this->user = User::factory()->create();
-        $this->actingAs($this->user);
+    public function test_if_authenticated_user_can_access_store_route()
+    {
+        $this->withExceptionHandling();
+
+        $this->post(route('posts.comments.store', Post::factory()->create(), ['body' => 'Test comment']))
+            ->assertRedirect(route('login'));
     }
 
     public function test_can_store_a_comment()
     {
         $post = Post::factory()->create();
+        $user = $this->signInAsUser();
 
         $this->post(route('posts.comments.store', $post), [
             'body' => 'This is a comment',
@@ -32,13 +36,14 @@ class StoreTest extends TestCase
         $this->assertDatabaseHas('comments', [
             'body' => 'This is a comment',
             'post_id' => $post->id,
-            'user_id' => $this->user->id,
+            'user_id' => $user->id,
         ]);
     }
 
     public function test_store_should_redirect_to_show_page()
     {
         $post = Post::factory()->create();
+        $this->signInAsUser();
 
         $this->post(route('posts.comments.store', $post), [
             'body' => 'This is a comment',
