@@ -16,11 +16,14 @@ class StoreTest extends TestCase
         $this->withoutExceptionHandling();
     }
 
-    public function test_if_authenticated_user_can_access_store_route()
+    public function test_if_unauthenticated_user_can_access_store_route()
     {
         $this->withExceptionHandling();
+        $post = Post::factory()->create();
 
-        $this->post(route('posts.comments.store', Post::factory()->create(), ['body' => 'Test comment']))
+        $this->post(route('posts.comments.store', $post), [
+            'body' => 'Test comment'
+        ])
             ->assertRedirect(route('login'));
     }
 
