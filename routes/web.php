@@ -30,6 +30,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::post('/posts/{post}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('posts.comments.store');
+    Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 Route::get('/posts', [\App\Http\Controllers\PostController::class, 'index'])->name('posts.index');

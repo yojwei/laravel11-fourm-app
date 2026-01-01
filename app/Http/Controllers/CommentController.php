@@ -21,4 +21,15 @@ class CommentController extends Controller
 
         return to_route('posts.show', $post);
     }
+
+    public function destroy(Comment $comment)
+    {
+        if (request()->user()->id !== $comment->user_id) {
+            abort(403);
+        }
+
+        $comment->delete();
+
+        return to_route('posts.show', $comment->post_id);
+    }
 }
