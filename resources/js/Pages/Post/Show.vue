@@ -5,6 +5,10 @@ import Container from '@/Components/Container.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { relativeDate } from "@/Utilities/date.js";
 import Comment from '@/Components/Comment.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextArea from '@/Components/TextArea.vue';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     post: Object,
@@ -16,6 +20,19 @@ const formattedDate = (date) => { return relativeDate(date); };
 const lines = computed(() => {
     return props.post.body ? props.post.body.split(/\r?\n/) : [];
 });
+
+const commentForm = useForm({
+    body: ''
+});
+
+const submitComment = () => {
+    commentForm.post(route('posts.comments.store', props.post.id), {
+        onSuccess: () => {
+            commentForm.reset();
+        },
+        preserveScroll: true
+    });
+};
 
 </script>
 
@@ -38,6 +55,16 @@ const lines = computed(() => {
 
                 <div class="px-6 pb-6">
                     <h2 class="text-lg font-bold">Comments</h2>
+
+                    <form v-if="$page.props.auth.user" @submit.prevent="submitComment">
+                        <div class="mt-4">
+                            <InputLabel for="body" class="sr-only">Comment</InputLabel>
+                            <TextArea v-model="commentForm.body" rows="4" class="w-full border rounded-md p-2 mt-1"
+                                required />
+                        </div>
+                        <PrimaryButton type="submit" class="mt-2 mb-4" :disabled="commentForm.processing">Post Comment
+                        </PrimaryButton>
+                    </form>
 
                     <ul class="divide-y">
                         <li v-for="comment in comments.data" :key="comment.id" class="py-2 hover:bg-gray-100">
