@@ -31,6 +31,7 @@ Route::middleware([
 
     Route::post('/posts/{post}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('posts.comments.store');
     Route::get('/comments/{comment}/edit', [\App\Http\Controllers\CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
 });
 

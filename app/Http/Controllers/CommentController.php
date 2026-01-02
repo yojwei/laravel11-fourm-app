@@ -27,6 +27,23 @@ class CommentController extends Controller
     {
         return inertia('Comments/Edit', [
             'comment' => $comment,
+            'page' => request()->query('page')
+        ]);
+    }
+
+    public function update(Comment $comment)
+    {
+        Gate::authorize('update', $comment);
+
+        $comment->update(
+            request()->validate([
+                'body' => ['required', 'string', 'max:2500'],
+            ])
+        );
+
+        return to_route('posts.show', [
+            'post' => $comment->post_id,
+            'page' => request()->query('page')
         ]);
     }
 

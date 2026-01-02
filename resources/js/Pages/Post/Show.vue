@@ -41,6 +41,10 @@ const deleteComment = (commentId) => router.delete(route('comments.destroy', {
     preserveScroll: true
 });
 
+const editComment = (commentId) => router.get(route('comments.edit', commentId), {
+    'page': props.comments.meta.current_page
+});
+
 </script>
 
 <template>
@@ -75,7 +79,7 @@ const deleteComment = (commentId) => router.delete(route('comments.destroy', {
 
                     <ul class="divide-y">
                         <li v-for="comment in comments.data" :key="comment.id" class="py-2 hover:bg-gray-100">
-                            <Comment :comment="comment" @delete="deleteComment" />
+                            <Comment :comment="comment" @delete="deleteComment" @edit="editComment" />
                         </li>
                     </ul>
                     <Pagination :meta="comments.meta" :only="['comments']" class="mt-6 flex justify-center" />

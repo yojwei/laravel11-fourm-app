@@ -21,12 +21,106 @@ class EditTest extends TestCase
     }
 
     # can update a comment
+    public function test_user_can_update_own_comment()
+    {
+        $user = $this->signInAsUser();
+
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+            'body' => 'Old comment body',
+        ]);
+
+        $this->get(route('comments.edit', $comment))
+            ->assertOk();
+
+        $this->put(route('comments.update', $comment), [
+            'body' => 'Updated comment body',
+        ]);
+
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'body' => 'Updated comment body',
+        ]);
+    }
 
     # redirect to post show after updating comment
+    public function test_user_is_redirected_to_post_show_after_updating_comment()
+    {
+        $user = $this->signInAsUser();
+
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+            'body' => 'Old comment body',
+        ]);
+
+        $response = $this->put(route('comments.update', $comment), [
+            'body' => 'Updated comment body',
+        ]);
+
+        $response->assertRedirect(route('posts.show', $comment->post_id));
+    }
 
     # redirect to the current page of comments after updating comment
+    public function test_user_is_redirected_to_current_page_after_updating_comment()
+    {
+        $user = $this->signInAsUser();
+
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+            'body' => 'Old comment body',
+        ]);
+
+        $response = $this->put(route('comments.update', $comment) . '?page=2', [
+            'body' => 'Updated comment body',
+        ]);
+
+        $response->assertRedirect(route('posts.show', [
+            'post' => $comment->post_id,
+            'page' => 2
+        ]));
+    }
+
 
     # cannot update a comment from other users
+    public function test_user_cannot_update_other_users_comment()
+    {
+        $this->signInAsUser();
+
+        $comment = Comment::factory()->create([
+            'body' => 'Old comment body',
+        ]);
+
+        $this->withExceptionHandling();
+
+        $this->put(route('comments.update', $comment), [
+            'body' => 'Updated comment body',
+        ])->assertStatus(403);
+
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'body' => 'Old comment body',
+        ]);
+    }
 
     # reqires a valid body
+    public function test_update_comment_requires_valid_body()
+    {
+        $user = $this->signInAsUser();
+
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+            'body' => 'Old comment body',
+        ]);
+
+        $this->withExceptionHandling();
+
+        $this->put(route('comments.update', $comment), [
+            'body' => '',
+        ])->assertSessionHasErrors('body');
+
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'body' => 'Old comment body',
+        ]);
+    }
 }

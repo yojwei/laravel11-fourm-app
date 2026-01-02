@@ -1,8 +1,8 @@
 <script setup>
 import { relativeDate } from "@/Utilities/date.js";
 
-const props = defineProps(['comment']);
-const emit = defineEmits(['delete']);
+defineProps(['comment']);
+const emit = defineEmits(['delete', 'edit']);
 </script>
 
 <template>
@@ -14,7 +14,10 @@ const emit = defineEmits(['delete']);
             <p class="mt-1">{{ comment.body }}</p>
             <span class="first-letter:uppercase block pt-1 text-xs text-gray-600">By {{ comment.user.name }} {{
                 relativeDate(comment.created_at) }}</span>
-            <div class="mt-1 text-right empty:hidden">
+            <div class="mt-1 empty:hidden flex justify-end space-x-2">
+                <form @submit.prevent="$emit('edit', comment.id)" v-if="comment.can?.update">
+                    <button class="bg-indigo-500 text-white px-2 py-1 rounded">Edit</button>
+                </form>
                 <form @submit.prevent="$emit('delete', comment.id)" v-if="comment.can?.delete">
                     <button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                 </form>

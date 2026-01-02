@@ -22,6 +22,7 @@ class CommentResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'can' => [
+                'update' => $request->user()?->can('update', $this->resource) ?? false,
                 'delete' => $request->user()?->can('delete', $this->resource) ?? false,
             ],
         ];
