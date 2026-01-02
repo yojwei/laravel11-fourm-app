@@ -23,6 +23,13 @@ class CommentController extends Controller
         return to_route('posts.show', $post);
     }
 
+    public function edit(Comment $comment)
+    {
+        return inertia('Comments/Edit', [
+            'comment' => $comment,
+        ]);
+    }
+
     public function destroy(Comment $comment)
     {
         Gate::authorize('delete', $comment);
