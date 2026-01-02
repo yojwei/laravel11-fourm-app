@@ -1,11 +1,8 @@
 <script setup>
 import { relativeDate } from "@/Utilities/date.js";
-import { router } from '@inertiajs/vue3';
 
 const props = defineProps(['comment']);
-const deleteComment = () => router.delete(route('comments.destroy', props.comment.id), {
-    preserveScroll: true
-});
+const emit = defineEmits(['delete']);
 </script>
 
 <template>
@@ -18,7 +15,7 @@ const deleteComment = () => router.delete(route('comments.destroy', props.commen
             <span class="first-letter:uppercase block pt-1 text-xs text-gray-600">By {{ comment.user.name }} {{
                 relativeDate(comment.created_at) }}</span>
             <div class="mt-1 text-right empty:hidden">
-                <form @submit.prevent="deleteComment" v-if="comment.can?.delete">
+                <form @submit.prevent="$emit('delete', comment.id)" v-if="comment.can?.delete">
                     <button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                 </form>
             </div>

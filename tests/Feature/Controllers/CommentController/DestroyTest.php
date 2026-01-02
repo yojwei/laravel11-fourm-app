@@ -88,4 +88,18 @@ class DestroyTest extends TestCase
             'id' => $comment->id,
         ]);
     }
+
+    public function test_redirects_to_post_show_with_page_query()
+    {
+        $user = $this->signInAsUser();
+
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $page = 2;
+
+        $this->delete(route('comments.destroy', ['comment' => $comment->id, 'page' => $page]))
+            ->assertRedirect(route('posts.show', ['post' => $comment->post_id, 'page' => $page]));
+    }
 }

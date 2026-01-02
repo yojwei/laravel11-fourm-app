@@ -8,7 +8,7 @@ import Comment from '@/Components/Comment.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextArea from '@/Components/TextArea.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     post: Object,
@@ -33,6 +33,13 @@ const submitComment = () => {
         preserveScroll: true
     });
 };
+
+const deleteComment = (commentId) => router.delete(route('comments.destroy', {
+    'comment': commentId,
+    'page': props.comments.meta.current_page
+}), {
+    preserveScroll: true
+});
 
 </script>
 
@@ -68,7 +75,7 @@ const submitComment = () => {
 
                     <ul class="divide-y">
                         <li v-for="comment in comments.data" :key="comment.id" class="py-2 hover:bg-gray-100">
-                            <Comment :comment="comment" />
+                            <Comment :comment="comment" @delete="deleteComment" />
                         </li>
                     </ul>
                     <Pagination :meta="comments.meta" :only="['comments']" class="mt-6 flex justify-center" />
