@@ -1,12 +1,8 @@
 <script setup>
 import { relativeDate } from "@/Utilities/date.js";
-import { computed } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps(['comment']);
-
-const page = usePage();
-
 const deleteComment = () => router.delete(route('comments.destroy', props.comment.id), {
     preserveScroll: true
 });
