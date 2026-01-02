@@ -68,4 +68,24 @@ class DestroyTest extends TestCase
             'id' => $comment->id,
         ]);
     }
+
+    public function test_prevent_deleting_comments_over_a_hour()
+    {
+        $this->freezeTime();
+        $user = $this->signInAsUser();
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $this->withExceptionHandling();
+
+        $this->travel(1)->hours();
+
+        $this->delete(route('comments.destroy', $comment))
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+        ]);
+    }
 }
