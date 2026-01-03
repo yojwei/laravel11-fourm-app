@@ -49,6 +49,8 @@ const commentBedingEdit = computed(() => {
     return props.comments.data.find(c => c.id === commentIdBeingEdited.value);
 });
 
+const commentTextAreaRef = ref(null);
+
 // ============================================================================
 // Methods - 方法
 // ============================================================================
@@ -76,6 +78,7 @@ const deleteComment = (commentId) => {
 const editComment = (commentId) => {
     commentIdBeingEdited.value = commentId;            // 設定編輯的留言ID
     commentForm.body = commentBedingEdit.value?.body;  // 載入該留言的內容
+    commentTextAreaRef.value?.focus();               // 聚焦到留言輸入框
 };
 
 // 更新編輯的留言內容到伺服器
@@ -135,8 +138,8 @@ const cancelEditComment = () => {
                         <!-- 留言輸入框 -->
                         <div class="mt-4">
                             <InputLabel for="body" class="sr-only">Comment</InputLabel>
-                            <TextArea v-model="commentForm.body" rows="4" class="w-full border rounded-md p-2 mt-1"
-                                placeholder="輸入您的留言..." required />
+                            <TextArea ref="commentTextAreaRef" v-model="commentForm.body" rows="4"
+                                class="w-full border rounded-md p-2 mt-1" placeholder="輸入您的留言..." required />
                         </div>
                         <!-- 提交和取消按鈕 -->
                         <div class="mt-2">
