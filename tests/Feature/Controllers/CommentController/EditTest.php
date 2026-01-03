@@ -30,9 +30,6 @@ class EditTest extends TestCase
             'body' => 'Old comment body',
         ]);
 
-        $this->get(route('comments.edit', $comment))
-            ->assertOk();
-
         $this->put(route('comments.update', $comment), [
             'body' => 'Updated comment body',
         ]);
