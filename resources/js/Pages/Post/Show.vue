@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Container from '@/Components/Container.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -9,6 +9,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextArea from '@/Components/TextArea.vue';
 import { useForm, router } from '@inertiajs/vue3';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     post: Object,
@@ -41,9 +42,32 @@ const deleteComment = (commentId) => router.delete(route('comments.destroy', {
     preserveScroll: true
 });
 
-const editComment = (commentId) => router.get(route('comments.edit', commentId), {
-    'page': props.comments.meta.current_page
+const commentIdBeingEdited = ref(null);
+const commentBedingEdit = computed(() => {
+    return props.comments.data.find(c => c.id === commentIdBeingEdited.value);
 });
+
+const editComment = (commentId) => {
+    commentIdBeingEdited.value = commentId;
+    commentForm.body = commentBedingEdit.value?.body;
+};
+
+const updateComment = () => commentForm.put(route('comments.update', {
+    'comment': commentIdBeingEdited.value,
+    'page': props.comments.meta.current_page
+}), {
+    onSuccess: () => {
+        commentIdBeingEdited.value = null;
+        commentForm.reset();
+    },
+    preserveScroll: true
+});
+
+
+const cancelEditComment = () => {
+    commentIdBeingEdited.value = null;
+    commentForm.reset();
+};
 
 </script>
 
@@ -67,14 +91,17 @@ const editComment = (commentId) => router.get(route('comments.edit', commentId),
                 <div class="px-6 pb-6">
                     <h2 class="text-lg font-bold">Comments</h2>
 
-                    <form v-if="$page.props.auth.user" @submit.prevent="submitComment">
+                    <form v-if="$page.props.auth.user"
+                        @submit.prevent="() => commentBedingEdit ? updateComment() : submitComment()">
                         <div class="mt-4">
                             <InputLabel for="body" class="sr-only">Comment</InputLabel>
                             <TextArea v-model="commentForm.body" rows="4" class="w-full border rounded-md p-2 mt-1"
                                 required />
                         </div>
-                        <PrimaryButton type="submit" class="mt-2 mb-4" :disabled="commentForm.processing">Post Comment
+                        <PrimaryButton type="submit" class="mt-2 mb-4 mr-2" :disabled="commentForm.processing"
+                            v-text="commentIdBeingEdited ? 'Update Comment' : 'Add Comment'">
                         </PrimaryButton>
+                        <SecondaryButton v-if="commentIdBeingEdited" @click="cancelEditComment">Cancel</SecondaryButton>
                     </form>
 
                     <ul class="divide-y">
