@@ -10,6 +10,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextArea from '@/Components/TextArea.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { relativeDate } from '@/Utilities/date.js';
+import { useConfirm } from '@/Utilities/Composables/useConfirm';
 
 // ============================================================================
 // Props - 從父組件接收的屬性
@@ -64,8 +65,15 @@ const submitComment = () => {
     });
 };
 
+const { confirmation } = useConfirm();
+
 // 刪除指定的留言
-const deleteComment = (commentId) => {
+const deleteComment = async (commentId) => {
+    if (!await confirmation('確定刪除這則留言?')) {
+        return;
+    }
+
+
     router.delete(route('comments.destroy', {
         comment: commentId,
         page: props.comments.meta.current_page, // 保持在同一頁
@@ -82,15 +90,17 @@ const editComment = (commentId) => {
 };
 
 // 更新編輯的留言內容到伺服器
-const updateComment = () => {
+const updateComment = async () => {
+    if (!await confirmation('希望更新這則留言?')) {
+        commentTextAreaRef.value?.focus();
+        return;
+    }
+
     commentForm.put(route('comments.update', {
         comment: commentIdBeingEdited.value,
         page: props.comments.meta.current_page,
     }), {
-        onSuccess: () => {
-            commentIdBeingEdited.value = null; // 清空編輯狀態
-            commentForm.reset();               // 清空表單
-        },
+        onSuccess: cancelEditComment, // 成功後取消編輯狀態
         preserveScroll: true,
     });
 };
