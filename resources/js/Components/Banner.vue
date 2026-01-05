@@ -1,17 +1,25 @@
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 const show = ref(true);
 const style = ref('success');
 const message = ref('');
+const timeout = ref(null);
 
 watchEffect(async () => {
     style.value = page.props.jetstream.flash?.bannerStyle || 'success';
     message.value = page.props.jetstream.flash?.banner || '';
     show.value = true;
+
+    clearTimeout(timeout.value);
+    timeout.value = setTimeout(() => {
+        show.value = false;
+    }, 5000);
 });
+
+onUnmounted(() => clearTimeout(timeout.value));
 </script>
 
 <template>
