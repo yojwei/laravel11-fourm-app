@@ -26,4 +26,20 @@ class PostController extends Controller
             'comments' => fn() => CommentResource::collection($post->comments()->with('user')->latest()->latest('id')->paginate(10)),
         ]);
     }
+
+    public function store()
+    {
+        $data = request()->validate([
+            'title' => 'required|string|max:120|min:8',
+            'body' => 'required|string|max:10000|min:20',
+        ]);
+
+        $post = Post::create([
+            ...$data,
+            'user_id' => request()->user()->id,
+        ]);
+
+
+        return to_route('posts.show', $post->id);
+    }
 }
