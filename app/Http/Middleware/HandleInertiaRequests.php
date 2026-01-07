@@ -37,7 +37,9 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+            'permissions' => [
+                'canCreatePost' => $request->user()?->can('create', \App\Models\Post::class) ?? false,
+            ],
         ];
     }
 }

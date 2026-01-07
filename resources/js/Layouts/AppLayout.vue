@@ -39,7 +39,13 @@ const menu = [
         url: route('posts.index'),
         root: 'posts.index',
         when: () => true,
-    }
+    },
+    {
+        name: 'Create a post',
+        url: route('posts.create'),
+        root: 'posts.create',
+        when: () => usePage().props.permissions.canCreatePost,
+    },
 ];
 </script>
 
