@@ -42,4 +42,9 @@ class PostController extends Controller
 
         return to_route('posts.show', $post->id);
     }
+
+    public function create()
+    {
+        return inertia('Post/Create');
+    }
 }

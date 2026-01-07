@@ -31,7 +31,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::resource('posts.comments', CommentController::class)->shallow();
-    Route::post('/posts', [\App\Http\Controllers\PostController::class, 'store'])->name('posts.store');
+    Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['create', 'store']);
 });
 
 Route::get('/posts', [\App\Http\Controllers\PostController::class, 'index'])->name('posts.index');
