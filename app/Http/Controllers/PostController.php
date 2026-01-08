@@ -7,10 +7,15 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
-
+    /**
+     * 顯示所有貼文列表
+     *
+     * @return \Inertia\Response
+     */
     public function index()
     {
         Gate::authorize('viewAny', Post::class);
@@ -20,9 +25,22 @@ class PostController extends Controller
         ]);
     }
 
+    /**
+     * 顯示單個貼文詳細頁面
+     *
+     * @param Post $post 要顯示的貼文實例
+     * @return \Inertia\Response
+     */
     public function show(Post $post)
     {
         Gate::authorize('view', $post);
+
+        $currentPath = request()->path();
+
+        // 檢查URL是否包含正確的slug，若不正確則重定向
+        if (!Str::contains($currentPath, $post->showRoute())) {
+            return redirect($post->showRoute(request()->query()), 301); // 301 代表永久重定向
+        }
 
         $post->load('user');
 
@@ -32,22 +50,34 @@ class PostController extends Controller
         ]);
     }
 
+    /**
+     * 保存新建的貼文
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store()
     {
+        // 驗證輸入資料
         $data = request()->validate([
             'title' => 'required|string|max:120|min:8',
             'body' => 'required|string|max:10000|min:20',
         ]);
 
+        // 建立新貼文
         $post = Post::create([
             ...$data,
             'user_id' => request()->user()->id,
         ]);
 
-
+        // 重定向到新貼文的詳細頁面
         return to_route('posts.show', $post->id);
     }
 
+    /**
+     * 顯示建立貼文的表單頁面
+     *
+     * @return \Inertia\Response
+     */
     public function create()
     {
         Gate::authorize('create', Post::class);

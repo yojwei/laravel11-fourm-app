@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -44,5 +45,10 @@ class Post extends Model
         return Attribute::make(
             get: fn($value) => ucwords($value),
         );
+    }
+
+    public function showRoute(array $queryParameters = []): string
+    {
+        return route('posts.show', [$this, Str::slug($this->title), ...$queryParameters]);
     }
 }
