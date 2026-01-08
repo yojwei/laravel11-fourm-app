@@ -19,7 +19,7 @@ class CommentController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
-        return to_route('posts.show', $post)
+        return redirect($post->showRoute())
             ->banner('Comment added！');
     }
 
@@ -33,10 +33,10 @@ class CommentController extends Controller
             ])
         );
 
-        return to_route('posts.show', [
+        return redirect($comment->post->showRoute([
             'post' => $comment->post_id,
             'page' => request()->query('page')
-        ])->banner('Comment updated！');;
+        ]))->banner('Comment updated！');
     }
 
     public function destroy(Comment $comment)
@@ -45,9 +45,9 @@ class CommentController extends Controller
 
         $comment->delete();
 
-        return to_route('posts.show', [
+        return redirect($comment->post->showRoute([
             'post' => $comment->post_id,
             'page' => request()->query('page')
-        ])->banner('Comment deleted！');;
+        ]))->banner('Comment deleted！');;
     }
 }

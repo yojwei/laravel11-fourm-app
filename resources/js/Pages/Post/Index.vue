@@ -25,7 +25,7 @@ const formattedDate = (date) => { return relativeDate(date); };
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <ul class="divide-y">
                     <li v-for="post in posts.data" :key="post.id" class="px-4 py-2 hover:bg-gray-100">
-                        <Link :href="route('posts.show', post.id)" class="flex justify-between items-center">
+                        <Link :href="post.routes.show" class="flex justify-between items-center">
                             <span class="font-bold text-lg">{{ post.title }}</span>
                             <span class="flex flex-col justify-end items-end text-right">
                                 <span class="text-gray-500 text-sm">{{ formattedDate(post.created_at) }}</span>
