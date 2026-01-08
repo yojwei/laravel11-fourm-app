@@ -70,7 +70,7 @@ class PostController extends Controller
         ]);
 
         // 重定向到新貼文的詳細頁面
-        return to_route('posts.show', $post->id);
+        return redirect($post->showRoute())->banner('Post created successfully!');
     }
 
     /**
