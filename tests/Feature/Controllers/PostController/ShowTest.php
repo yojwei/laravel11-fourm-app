@@ -10,8 +10,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * 測試顯示帖子的控制器
+ */
 class ShowTest extends TestCase
 {
+    /**
+     * 應該返回正確的組件
+     */
     public function test_should_return_the_correct_component()
     {
         $this->withoutExceptionHandling();
@@ -23,6 +29,9 @@ class ShowTest extends TestCase
         $response->assertHasResource('post', PostResource::make($post));
     }
 
+    /**
+     * 應該將評論傳遞給視圖
+     */
     public function test_should_passes_comments_to_view()
     {
         $this->withoutExceptionHandling();
@@ -37,5 +46,16 @@ class ShowTest extends TestCase
 
         $response = $this->get(route('posts.show', $posts->id));
         $response->assertHasPaginatedResource('comments', CommentResource::collection($comments->reverse()));
+    }
+
+    /** 重定向舊的或不正確的 URL */
+    public function test_will_redirect_if_the_slug_is_incorrect()
+    {
+        $this->withoutExceptionHandling();
+
+        $post = Post::factory()->create(['title' => 'Hello world']);
+
+        $this->get(route('posts.show', [$post, 'foo-bar', 'page' => 2]))
+            ->assertRedirect($post->showRoute(['page' => 2]));
     }
 }
