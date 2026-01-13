@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextArea from "@/Components/TextArea.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from '@/Components/InputError.vue';
+import MarkdownEditor from '@/Components/MarkdownEditor.vue';
 
 
 // ============================================================================
@@ -41,6 +42,7 @@ const submitPost = () => postForm.post(route('posts.store'));
                 </div>
                 <div class="mt-2">
                     <InputLabel for="body" class="sr-only" />
+                    <MarkdownEditor v-model="postForm.body" />
                     <TextArea id="body" v-model="postForm.body" rows="25" class="w-full border rounded-md" />
                     <InputError :message="postForm.errors.body" class="mt-2" />
                 </div>
