@@ -48,6 +48,16 @@ class Post extends Model
         );
     }
 
+    protected function body(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => [
+                'body' => $value,
+                'html' => str($value)->markdown(),
+            ]
+        );
+    }
+
     public function showRoute(array $queryParameters = []): string
     {
         return route('posts.show', [$this, Str::slug($this->title), ...$queryParameters]);

@@ -19,7 +19,7 @@ class PostResource extends JsonResource
             'user' => $this->whenLoaded('user', fn() => UserResource::make($this->user)),
             'title' => $this->title,
             'body' => $this->body,
-            'html' => cache()->remember('post-' . $this->id . '-html', 10, fn() => str($this->body)->markdown()),
+            'html' => $this->html,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'routes' => [

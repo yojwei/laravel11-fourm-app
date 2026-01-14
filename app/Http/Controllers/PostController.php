@@ -66,7 +66,6 @@ class PostController extends Controller
         // 建立新貼文
         $post = Post::create([
             ...$data,
-            'html' => str($data['body'])->markdown(),
             'user_id' => request()->user()->id,
         ]);
 

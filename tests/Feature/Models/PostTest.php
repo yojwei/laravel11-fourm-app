@@ -49,4 +49,18 @@ class PostTest extends TestCase
             $post->showRoute(['page' => 2])
         );
     }
+
+    /** generate html from body */
+    public function test_generate_html_from_body()
+    {
+        $this->withoutExceptionHandling();
+
+        $post = Post::factory()->make([
+            'body' => "# Hello World\nThis is a **bold** statement.",
+        ]);
+
+        $post->save();
+
+        $this->assertEquals(str($post->body)->markdown(), $post->html);
+    }
 }
