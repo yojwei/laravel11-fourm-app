@@ -26,14 +26,6 @@ const props = defineProps({
 // 將日期格式化為相對時間（例如：1小時前、2天前）
 const formattedDate = (date) => relativeDate(date);
 
-// ============================================================================
-// Computed - 計算屬性
-// ============================================================================
-// 將貼文內容按換行符分割成陣列，用於逐行顯示
-const lines = computed(() => {
-    return props.post.body ? props.post.body.split(/\r?\n/) : [];
-});
-
 // 追蹤當前正在編輯的留言ID
 const commentIdBeingEdited = ref(null);
 
@@ -130,11 +122,7 @@ const cancelEditComment = () => {
                 <hr />
 
                 <!-- 貼文內容區域 -->
-                <article class="px-6 py-6">
-                    <!-- 逐行顯示貼文內容 -->
-                    <div v-for="(line, index) in lines" :key="index" class="indent-4 min-h-[1.5em] text-base/6">
-                        {{ line }}
-                    </div>
+                <article class="px-6 py-6 prose prose-sm max-w-none" v-html="post.html">
                 </article>
 
                 <!-- 留言區域 -->
