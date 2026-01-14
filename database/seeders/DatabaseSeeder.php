@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 
         // 建立 200 篇貼文，並將其關聯到現有的用戶
         Post::factory(200)
+            ->withFixture()
             ->has(Comment::factory(18)->recycle($users))
             ->recycle($users)
             ->create();
