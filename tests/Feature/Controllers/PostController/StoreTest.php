@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Controllers\PostController;
 
+use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -40,7 +41,7 @@ class StoreTest extends TestCase
         $this->signInAsUser();
 
         $this->post(route('posts.store'), $this->data)
-            ->assertRedirect(route('posts.show', 1));
+            ->assertRedirect(Post::latest('id')->first()->showRoute());
     }
 
     /** require a valid title

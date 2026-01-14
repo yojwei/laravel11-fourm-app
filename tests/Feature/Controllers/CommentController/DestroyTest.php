@@ -50,7 +50,7 @@ class DestroyTest extends TestCase
         ]);
 
         $this->delete(route('comments.destroy', $comment))
-            ->assertRedirect(route('posts.show', $comment->post_id));
+            ->assertRedirect($comment->post->showRoute());
     }
 
     public function test_prevent_deleting_other_users_comments()
@@ -100,6 +100,6 @@ class DestroyTest extends TestCase
         $page = 2;
 
         $this->delete(route('comments.destroy', ['comment' => $comment->id, 'page' => $page]))
-            ->assertRedirect(route('posts.show', ['post' => $comment->post_id, 'page' => $page]));
+            ->assertRedirect($comment->post->showRoute(['page' => $page]));
     }
 }

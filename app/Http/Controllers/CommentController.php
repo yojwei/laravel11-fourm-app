@@ -33,10 +33,7 @@ class CommentController extends Controller
             ])
         );
 
-        return redirect($comment->post->showRoute([
-            'post' => $comment->post_id,
-            'page' => request()->query('page')
-        ]))->banner('Comment updated！');
+        return redirect($comment->post->showRoute(['page' => request()->query('page')]))->banner('Comment updated！');
     }
 
     public function destroy(Comment $comment)
@@ -46,7 +43,6 @@ class CommentController extends Controller
         $comment->delete();
 
         return redirect($comment->post->showRoute([
-            'post' => $comment->post_id,
             'page' => request()->query('page')
         ]))->banner('Comment deleted！');;
     }

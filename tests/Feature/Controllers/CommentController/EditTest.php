@@ -54,7 +54,7 @@ class EditTest extends TestCase
             'body' => 'Updated comment body',
         ]);
 
-        $response->assertRedirect(route('posts.show', $comment->post_id));
+        $response->assertRedirect($comment->post->showRoute());
     }
 
     # redirect to the current page of comments after updating comment
@@ -71,10 +71,7 @@ class EditTest extends TestCase
             'body' => 'Updated comment body',
         ]);
 
-        $response->assertRedirect(route('posts.show', [
-            'post' => $comment->post_id,
-            'page' => 2
-        ]));
+        $response->assertRedirect($comment->post->showRoute(['page' => 2]));
     }
 
 
