@@ -14,6 +14,11 @@ class Post extends Model
     /** @use HasFactory<\Database\Factories\PostFactory> */
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saving(fn(self $post) => $post->fill(['html' => str($post->body)->markdown()]));
+    }
+
     protected $fillable = [
         'user_id',
         'title',
@@ -45,16 +50,6 @@ class Post extends Model
     {
         return Attribute::make(
             get: fn($value) => ucwords($value),
-        );
-    }
-
-    protected function body(): Attribute
-    {
-        return Attribute::make(
-            set: fn($value) => [
-                'body' => $value,
-                'html' => str($value)->markdown(),
-            ]
         );
     }
 
