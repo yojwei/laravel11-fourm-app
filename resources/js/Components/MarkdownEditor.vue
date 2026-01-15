@@ -4,26 +4,30 @@ import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
 import { watch } from 'vue';
 import 'remixicon/fonts/remixicon.css'
-import Link from '@tiptap/extension-link';
-import CodeBlock from '@tiptap/extension-code-block'
+import { Placeholder } from '@tiptap/extensions'
 
 
 const props = defineProps({
     modelValue: '',
+    editorClass: '',
+    placeholder: 'Write something ...',
 });
 
 const emit = defineEmits(['update:modelValue']);
+
+defineExpose({ focus: () => editor.value?.commands.focus() });
 
 const editor = useEditor({
     extensions: [
         StarterKit,
         Markdown,
-        Link,
-        CodeBlock
+        Placeholder.configure({
+            placeholder: props.placeholder,
+        }),
     ],
     editorProps: {
         attributes: {
-            class: 'min-h-[512px] prose prose-sm max-w-none py-1.5 px-3',
+            class: `min-h-[512px] prose prose-sm max-w-none py-1.5 px-3 ${props.editorClass}`,
         },
     },
     onUpdate: () => emit('update:modelValue', editor.value?.getMarkdown()),
@@ -50,6 +54,16 @@ const promptUserForHref = () => {
     return editor.value?.chain().focus().setLink({ href }).run();
 };
 </script>
+
+<style scoped>
+:deep(.tiptap p.is-editor-empty:first-child::before) {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+</style>
 
 <template>
     <div
