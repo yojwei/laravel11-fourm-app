@@ -26,12 +26,12 @@ const editor = useEditor({
             class: 'min-h-[512px] prose prose-sm max-w-none py-1.5 px-3',
         },
     },
-    onUpdate: () => emit('update:modelValue', editor.value?.getHTML()),
+    onUpdate: () => emit('update:modelValue', editor.value?.getMarkdown()),
 });
 
 watch(() => props.modelValue, (newValue) => {
-    if (editor.value && newValue !== editor.value?.getHTML()) {
-        editor.value.commands.setContent(newValue || '');
+    if (editor.value && newValue !== editor.value?.getMarkdown()) {
+        editor.value.commands.setContent(newValue || '', { contentType: 'markdown' });
     }
 }, { immediate: true });
 
