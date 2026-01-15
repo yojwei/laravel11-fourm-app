@@ -11,6 +11,7 @@ import TextArea from '@/Components/TextArea.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { relativeDate } from '@/Utilities/date.js';
 import { useConfirm } from '@/Utilities/Composables/useConfirm';
+import MarkdownEditor from '@/Components/MarkdownEditor.vue';
 
 // ============================================================================
 // Props - 從父組件接收的屬性
@@ -136,8 +137,9 @@ const cancelEditComment = () => {
                         <!-- 留言輸入框 -->
                         <div class="mt-4">
                             <InputLabel for="body" class="sr-only">Comment</InputLabel>
-                            <TextArea ref="commentTextAreaRef" v-model="commentForm.body" rows="4"
-                                class="w-full border rounded-md p-2 mt-1" placeholder="輸入您的留言..." required />
+                            <MarkdownEditor ref="commentTextAreaRef" v-model="commentForm.body"
+                                editorClass="min-h-[150px]" class="w-full border rounded-md p-2 mt-1"
+                                placeholder="輸入您的留言..." required />
                         </div>
                         <!-- 提交和取消按鈕 -->
                         <div class="mt-2">

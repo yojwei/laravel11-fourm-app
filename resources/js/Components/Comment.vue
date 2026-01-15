@@ -11,7 +11,7 @@ const emit = defineEmits(['delete', 'edit']);
             <img :src="comment.user.profile_photo_url" class="h-10 w-10 rounded-full" />
         </div>
         <div class="flex-1">
-            <p class="mt-1">{{ comment.body }}</p>
+            <div v-html="comment.html" class="prose prose-sm max-w-none"></div>
             <span class="first-letter:uppercase block pt-1 text-xs text-gray-600">By {{ comment.user.name }} {{
                 relativeDate(comment.created_at) }}</span>
             <div class="mt-1 empty:hidden flex justify-end space-x-2">
