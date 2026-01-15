@@ -152,6 +152,7 @@ const promptUserForHref = () => {
                     <i class="ri-code-line"></i>
                 </button>
             </li>
+            <slot name="toolbar" :editor="editor" />
         </menu>
         <EditorContent :editor="editor" />
     </div>

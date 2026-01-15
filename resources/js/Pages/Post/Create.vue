@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from "@/Components/TextInput.vue";
 import InputError from '@/Components/InputError.vue';
 import MarkdownEditor from '@/Components/MarkdownEditor.vue';
+import { isInProduction } from '@/Utilities/environment.js';
 
 
 // ============================================================================
@@ -25,6 +26,17 @@ const postForm = useForm({
 // 提交新留言到伺服器
 const submitPost = () => postForm.post(route('posts.store'));
 
+const autofill = async () => {
+    if (isInProduction()) {
+        return;
+    }
+
+    await axios.get(route('local.post-content'))
+        .then(response => {
+            postForm.title = response.data.title;
+            postForm.body = response.data.body;
+        });
+}
 
 </script>
 
@@ -41,7 +53,15 @@ const submitPost = () => postForm.post(route('posts.store'));
                 </div>
                 <div class="mt-2">
                     <InputLabel for="body" class="sr-only" />
-                    <MarkdownEditor v-model="postForm.body" placeholder="寫點什麼..." />
+                    <MarkdownEditor v-model="postForm.body" placeholder="寫點什麼...">
+                        <template #toolbar="{ editor }">
+                            <li v-if="!isInProduction()">
+                                <button @click="autofill" type="button" class="px-3 py-2" title="autofull"> <i
+                                        class="ri-article-line"></i>
+                                </button>
+                            </li>
+                        </template>
+                    </MarkdownEditor>
                     <InputError :message="postForm.errors.body" class="mt-2" />
                 </div>
                 <div>
