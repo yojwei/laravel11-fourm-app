@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\Topic;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -16,12 +18,18 @@ class PostController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(?Topic $topic = null)
     {
         Gate::authorize('viewAny', Post::class);
 
+        $posts = Post::with(['user', 'topic'])
+            ->when($topic, fn(Builder $query) => $query->whereBelongsTo($topic))
+            ->latest()
+            ->latest('id')
+            ->paginate();
+
         return inertia('Post/Index', [
-            'posts' => fn() => PostResource::collection(Post::with(['user', 'topic'])->latest()->latest('id')->paginate()),
+            'posts' => fn() => PostResource::collection($posts),
         ]);
     }
 
