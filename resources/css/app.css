@@ -5,3 +5,39 @@
 [x-cloak] {
     display: none;
 }
+
+.badge {
+    @apply inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset;
+}
+
+.badge-gray {
+    @apply bg-gray-400/10 text-gray-400 ring-gray-400/20 hover:bg-gray-400/20 hover:text-gray-300;
+}
+
+.badge-red {
+    @apply bg-red-400/10 text-red-400 ring-red-400/20 hover:bg-red-400/20 hover:text-red-300;
+}
+
+.badge-yellow {
+    @apply bg-yellow-400/10 text-yellow-500 ring-yellow-400/20 hover:bg-yellow-400/20 hover:text-yellow-400;
+}
+
+.badge-green {
+    @apply bg-green-400/10 text-green-400 ring-green-500/20 hover:bg-green-400/20 hover:text-green-300;
+}
+
+.badge-blue {
+    @apply bg-blue-400/10 text-blue-400 ring-blue-400/30 hover:bg-blue-400/20 hover:text-blue-300;
+}
+
+.badge-indigo {
+    @apply bg-indigo-400/10 text-indigo-400 ring-indigo-400/30 hover:bg-indigo-400/20 hover:text-indigo-300;
+}
+
+.badge-purple {
+    @apply bg-purple-400/10 text-purple-400 ring-purple-400/30 hover:bg-purple-400/20 hover:text-purple-300;
+}
+
+.badge-pink {
+    @apply bg-pink-400/10 text-pink-400 ring-pink-400/20 hover:bg-pink-400/20 hover:text-pink-300;
+}
