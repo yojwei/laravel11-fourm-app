@@ -24,13 +24,15 @@ const formattedDate = (date) => { return relativeDate(date); };
         <Container>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <ul class="divide-y">
-                    <li v-for="post in posts.data" :key="post.id" class="px-4 py-2 hover:bg-gray-100">
+                    <li v-for="post in posts.data" :key="post.id" class="px-4 py-2">
                         <Link :href="post.routes.show" class="flex justify-between items-center">
                             <span class="font-bold text-lg">{{ post.title }}</span>
                             <span class="flex flex-col justify-end items-end text-right">
                                 <span class="text-gray-500 text-sm">{{ formattedDate(post.created_at) }}</span>
                                 <span class="font-bold text-gray-700">by {{ post.user.name }}</span>
                             </span>
+                        </Link>
+                        <Link class="badge badge-red" href="/">{{ post.topic.name }}
                         </Link>
                     </li>
                 </ul>

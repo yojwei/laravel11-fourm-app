@@ -21,7 +21,7 @@ class PostController extends Controller
         Gate::authorize('viewAny', Post::class);
 
         return inertia('Post/Index', [
-            'posts' => fn() => PostResource::collection(Post::with('user')->latest()->latest('id')->paginate()),
+            'posts' => fn() => PostResource::collection(Post::with(['user', 'topic'])->latest()->latest('id')->paginate()),
         ]);
     }
 

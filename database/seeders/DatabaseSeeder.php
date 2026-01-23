@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(TopicSeeder::class);
+        $topics = \App\Models\Topic::all();
+
         // 建立 10 個測試用戶
         $users = User::factory(10)->create();
 
@@ -28,7 +31,7 @@ class DatabaseSeeder extends Seeder
         Post::factory(200)
             ->withFixture()
             ->has(Comment::factory(18)->recycle($users))
-            ->recycle($users)
+            ->recycle([$users, $topics])
             ->create();
     }
 }
