@@ -23,7 +23,7 @@ class ShowTest extends TestCase
         $this->withoutExceptionHandling();
 
         $post = Post::factory()->create();
-        $post->load('user');
+        $post->load(['user', 'topic']);
 
         $response = $this->get($post->showRoute());
         $response->assertHasResource('post', PostResource::make($post));
