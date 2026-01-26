@@ -9,6 +9,7 @@ import PageHeading from '@/Components/PageHeading.vue'
 defineProps({
     'posts': Object,
     'selectedTopic': Object,
+    'topics': Array,
 });
 
 const formattedDate = (date) => { return relativeDate(date); };
@@ -20,10 +21,22 @@ const formattedDate = (date) => { return relativeDate(date); };
         <Head title="Posts" />
         <Container>
             <div class="ml-2">
-                <Link :href="route('posts.index')" class="text-indigo-500 hover:text-indigo-700 block mb-2">Back to all
-                    Posts</Link>
                 <PageHeading>{{ selectedTopic ? selectedTopic.name : 'All Posts' }}</PageHeading>
                 <p class="text-sm text-gray-600">{{ selectedTopic?.description }}</p>
+
+                <menu class="flex flex-wrap gap-2 my-4">
+                    <li>
+                        <Link :href="route('posts.index')" class="badge text-xl"
+                            :class="[!selectedTopic ? 'badge-red' : 'badge-blue']"> All Posts </Link>
+                    </li>
+                    <li v-for="topic in topics" :key="topic.id">
+                        <Link class="badge text-xl"
+                            :class="[selectedTopic?.id == topic.id ? 'badge-red' : 'badge-blue']"
+                            :href="route('posts.index', { topic: topic.slug })">{{
+                                topic.name }}
+                        </Link>
+                    </li>
+                </menu>
             </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <ul class="divide-y">
