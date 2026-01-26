@@ -13,7 +13,13 @@ class DeleteUser implements DeletesUsers
     public function delete(User $user): void
     {
         $user->deleteProfilePhoto();
-        $user->tokens->each->delete();
+
+        // Guard against missing Sanctum `tokens` relation when the package
+        // has been removed — ensure the user is still deleted.
+        if (method_exists($user, 'tokens')) {
+            $user->tokens->each->delete();
+        }
+
         $user->delete();
     }
 }
