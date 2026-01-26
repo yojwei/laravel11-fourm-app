@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class StoreTest extends TestCase
@@ -54,9 +55,7 @@ class StoreTest extends TestCase
             ->assertRedirect($post->showRoute());
     }
 
-    /**
-     * @dataProvider invalidBodyProvider
-     */
+    #[DataProvider('invalidBodyProvider')]
     public function test_it_requires_a_valid_body($value): void
     {
         $this->withExceptionHandling();

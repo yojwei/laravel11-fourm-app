@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Topic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class StoreTest extends TestCase
@@ -53,9 +54,7 @@ class StoreTest extends TestCase
             ->assertRedirect(Post::latest('id')->first()->showRoute());
     }
 
-    /** require a valid title
-     * @dataProvider titleProvider
-     */
+    #[DataProvider('titleProvider')]
     public function test_should_require_a_valid_title($badTitle)
     {
         $this->signInAsUser();
@@ -81,9 +80,7 @@ class StoreTest extends TestCase
         ];
     }
 
-    /** require a valid body
-     * @dataProvider bodyProvider
-     */
+    #[DataProvider('bodyProvider')]
     public function test_should_require_a_valid_body($badBody)
     {
         $this->signInAsUser();
