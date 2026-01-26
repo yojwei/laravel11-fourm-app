@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    h1 {
+        @apply text-3xl font-bold text-gray-900 leading-tight m-2;
+    }
+
+    h2 {
+        @apply text-2xl font-semibold text-gray-900 leading-tight m-2;
+    }
+
+    h3 {
+        @apply text-xl font-semibold text-gray-900 leading-snug m-2;
+    }
+}
+
 [x-cloak] {
     display: none;
 }
