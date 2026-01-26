@@ -3,7 +3,9 @@
 namespace Tests\Feature\Controllers\PostController;
 
 use App\Http\Resources\PostResource;
+use App\Http\Resources\TopicResource;
 use App\Models\Post;
+use App\Models\Topic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -26,6 +28,19 @@ class IndexTest extends TestCase
         $posts->load(['user', 'topic']);
 
         $response = $this->get(route('posts.index'));
+        $response->assertHasPaginatedResource('posts', PostResource::collection($posts->reverse()));
+    }
+
+    public function test_should_passes_posts_filtered_to_a_topic()
+    {
+        $general = Topic::factory()->create();
+
+        $posts = Post::factory(2)->for($general)->create();
+        Post::factory(3)->create(); // 其他主題的貼文
+
+        $posts->load(['user', 'topic']);
+
+        $response = $this->get(route('posts.index', ['topic' => $general]));
         $response->assertHasPaginatedResource('posts', PostResource::collection($posts->reverse()));
     }
 }

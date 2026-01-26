@@ -32,7 +32,8 @@ const formattedDate = (date) => { return relativeDate(date); };
                                 <span class="font-bold text-gray-700">by {{ post.user.name }}</span>
                             </span>
                         </Link>
-                        <Link class="badge badge-red" href="/">{{ post.topic.name }}
+                        <Link class="badge badge-red" :href="route('posts.index', { topic: post.topic.slug })">{{
+                            post.topic.name }}
                         </Link>
                     </li>
                 </ul>
