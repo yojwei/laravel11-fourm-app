@@ -34,6 +34,36 @@ class TopicSeeder extends Seeder
                 'name' => 'Lifestyle',
                 'description' => 'Topics related to lifestyle and wellness.'
             ],
+            [
+                'slug' => 'announcements',
+                'name' => 'Announcements',
+                'description' => 'Site-wide announcements and news.'
+            ],
+            [
+                'slug' => 'support',
+                'name' => 'Support',
+                'description' => 'Help and troubleshooting for users.'
+            ],
+            [
+                'slug' => 'jobs',
+                'name' => 'Jobs',
+                'description' => 'Job postings and career opportunities.'
+            ],
+            [
+                'slug' => 'events',
+                'name' => 'Events',
+                'description' => 'Meetups, webinars, and community events.'
+            ],
+            [
+                'slug' => 'photography',
+                'name' => 'Photography',
+                'description' => 'Share photos and photography tips.'
+            ],
+            [
+                'slug' => 'gaming',
+                'name' => 'Gaming',
+                'description' => 'Gaming discussions and news.'
+            ],
         ];
 
         // 預設主題依 `slug` 做 upsert，以避免重複。
