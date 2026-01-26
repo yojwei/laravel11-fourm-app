@@ -12,6 +12,7 @@ import Pagination from '@/Components/Pagination.vue';
 import { relativeDate } from '@/Utilities/date.js';
 import { useConfirm } from '@/Utilities/Composables/useConfirm';
 import MarkdownEditor from '@/Components/MarkdownEditor.vue';
+import PageHeading from '@/Components/PageHeading.vue';
 
 // ============================================================================
 // Props - 從父組件接收的屬性
@@ -112,7 +113,7 @@ const cancelEditComment = () => {
                 <!-- 貼文標題和元資訊區域 -->
                 <div>
                     <!-- 貼文標題 -->
-                    <h1 class="text-3xl font-bold px-6 pt-4">{{ post.title }}</h1>
+                    <PageHeading>{{ post.title }}</PageHeading>
                     <!-- 貼文發布時間和作者 -->
                     <span class="block px-6 pb-4 text-gray-500 text-right">
                         {{ formattedDate(post.created_at) }}

@@ -4,6 +4,7 @@ import Pagination from '@/Components/Pagination.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { relativeDate } from "@/Utilities/date.js";
+import PageHeading from '@/Components/PageHeading.vue'
 
 defineProps({
     'posts': Object,
@@ -16,12 +17,8 @@ const formattedDate = (date) => { return relativeDate(date); };
     <AppLayout title="Posts">
 
         <Head title="Posts" />
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tigh">
-                Posts
-            </h2>
-        </template>
         <Container>
+            <PageHeading>Posts</PageHeading>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <ul class="divide-y">
                     <li v-for="post in posts.data" :key="post.id" class="px-4 py-2">

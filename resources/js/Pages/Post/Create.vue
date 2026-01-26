@@ -8,6 +8,7 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from '@/Components/InputError.vue';
 import MarkdownEditor from '@/Components/MarkdownEditor.vue';
 import { isInProduction } from '@/Utilities/environment.js';
+import PageHeading from '@/Components/PageHeading.vue';
 
 
 // ============================================================================
@@ -43,7 +44,7 @@ const autofill = async () => {
 <template>
     <AppLayout title="create a post">
         <Container>
-            <h1 class="text-2xl font-bold">Create a Post</h1>
+            <PageHeading>Create a Post</PageHeading>
             <form @submit.prevent="submitPost">
                 <div class="mt-2">
                     <InputLabel for="title" class="sr-only" />
