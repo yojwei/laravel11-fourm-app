@@ -11,6 +11,15 @@ class CreateApiTokenTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (! method_exists(\App\Models\User::class, 'tokens') || ! class_exists(\Laravel\Sanctum\PersonalAccessToken::class)) {
+            $this->markTestSkipped('Sanctum is not installed.');
+        }
+    }
+
     public function test_api_tokens_can_be_created(): void
     {
         if (! Features::hasApiFeatures()) {
