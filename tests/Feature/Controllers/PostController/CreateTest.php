@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Controllers\PostController;
 
+use App\Http\Resources\TopicResource;
+use App\Models\Topic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -25,5 +27,15 @@ class CreateTest extends TestCase
             fn($inertia) => $inertia
                 ->component('Post/Create', true)
         );
+    }
+
+    public function test_should_passes_the_topics_to_the_view()
+    {
+        $this->signInAsUser();
+
+        $topics = Topic::factory(3)->create();
+
+        $response = $this->get(route('posts.create'));
+        $response->assertHasResource('topics', TopicResource::collection($topics));
     }
 }

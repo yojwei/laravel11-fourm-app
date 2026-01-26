@@ -53,7 +53,7 @@ class PostController extends Controller
             return redirect($post->showRoute(request()->query()), 301); // 301 代表永久重定向
         }
 
-        $post->load('user');
+        $post->load(['user', 'topic']);
 
         return inertia('Post/Show', [
             'post' => fn() => PostResource::make($post),
@@ -72,6 +72,7 @@ class PostController extends Controller
         $data = request()->validate([
             'title' => 'required|string|max:120|min:8',
             'body' => 'required|string|max:10000|min:20',
+            'topic_id' => 'required|exists:topics,id',
         ]);
 
         // 建立新貼文
@@ -93,6 +94,8 @@ class PostController extends Controller
     {
         Gate::authorize('create', Post::class);
 
-        return inertia('Post/Create');
+        return inertia('Post/Create', [
+            'topics' => fn() => TopicResource::collection(Topic::all()),
+        ]);
     }
 }

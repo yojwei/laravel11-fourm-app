@@ -3,16 +3,25 @@
 namespace Tests\Feature\Controllers\PostController;
 
 use App\Models\Post;
+use App\Models\Topic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class StoreTest extends TestCase
 {
-    protected $data = [
-        'title' => 'Test Post',
-        'body' => 'This is a test post content.',
-    ];
+    protected $data;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->data = [
+            'title' => 'Test Post',
+            'body' => 'This is a test post content.',
+            'topic_id' => Topic::factory()->create()->getKey(),
+        ];
+    }
 
     /** requires authentication */
     public function test_should_require_authentication()
