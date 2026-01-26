@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { useForm, router } from '@inertiajs/vue3';
+import { useForm, router, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Container from '@/Components/Container.vue';
 import Comment from '@/Components/Comment.vue';
@@ -112,8 +112,14 @@ const cancelEditComment = () => {
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <!-- 貼文標題和元資訊區域 -->
                 <div>
+
                     <!-- 貼文標題 -->
-                    <PageHeading>{{ post.title }}</PageHeading>
+                    <PageHeading>{{ post.title }}
+                        <Link class="badge badge-red text-2xl" :href="route('posts.index', { topic: post.topic.slug })">
+                            {{
+                                post.topic.name }}
+                        </Link>
+                    </PageHeading>
                     <!-- 貼文發布時間和作者 -->
                     <span class="block px-6 pb-4 text-gray-500 text-right">
                         {{ formattedDate(post.created_at) }}

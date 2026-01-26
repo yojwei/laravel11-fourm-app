@@ -10,6 +10,7 @@ import MarkdownEditor from '@/Components/MarkdownEditor.vue';
 import { isInProduction } from '@/Utilities/environment.js';
 import PageHeading from '@/Components/PageHeading.vue';
 
+const props = defineProps(['topics']);
 
 // ============================================================================
 // Form - 表單狀態管理
@@ -18,8 +19,8 @@ import PageHeading from '@/Components/PageHeading.vue';
 const postForm = useForm({
     title: '', // 貼文標題
     body: '', // 留言內容
+    topic_id: props.topics[0].id, // default 選擇第一個主題
 });
-
 
 // ============================================================================
 // Methods - 方法
@@ -51,6 +52,16 @@ const autofill = async () => {
                     <TextInput id="title" v-model="postForm.title" type="text" class="block w-full"
                         placeholder="Post Title" />
                     <InputError :message="postForm.errors.title" class="mt-2" />
+                </div>
+                <div class="mt-2">
+                    <InputLabel for="topic" class="sr-only" />
+                    <select id="topic" v-model="postForm.topic_id"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <option v-for="topic in topics" :key="topic.id" :value="topic.id">
+                            {{ topic.name }}
+                        </option>
+                    </select>
+                    <InputError :message="postForm.errors.topic_id" class="mt-2" />
                 </div>
                 <div class="mt-2">
                     <InputLabel for="body" class="sr-only" />
