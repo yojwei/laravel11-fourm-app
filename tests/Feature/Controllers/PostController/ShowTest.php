@@ -9,6 +9,7 @@ use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * 測試顯示帖子的控制器
@@ -49,13 +50,23 @@ class ShowTest extends TestCase
     }
 
     /** 重定向舊的或不正確的 URL */
-    public function test_will_redirect_if_the_slug_is_incorrect()
+    #[DataProvider('slugProvider')]
+    public function test_will_redirect_if_the_slug_is_incorrect($slug)
     {
         $this->withoutExceptionHandling();
 
         $post = Post::factory()->create(['title' => 'Hello world']);
 
-        $this->get(route('posts.show', [$post, 'foo-bar', 'page' => 2]))
+        $this->get(route('posts.show', [$post, $slug, 'page' => 2]))
             ->assertRedirect($post->showRoute(['page' => 2]));
+    }
+
+    /** body provider */
+    public static function slugProvider()
+    {
+        return [
+            ['foo-bar'],
+            ['hello'],    // 原本使用 contains 時，會產生錯誤
+        ];
     }
 }

@@ -49,7 +49,7 @@ class PostController extends Controller
         $currentPath = request()->path();
 
         // 檢查URL是否包含正確的slug，若不正確則重定向
-        if (!Str::contains($post->showRoute(), $currentPath)) {
+        if (!Str::endsWith($post->showRoute(), $currentPath)) {
             return redirect($post->showRoute(request()->query()), 301); // 301 代表永久重定向
         }
 
