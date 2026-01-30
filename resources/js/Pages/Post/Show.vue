@@ -7,7 +7,6 @@ import Comment from '@/Components/Comment.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextArea from '@/Components/TextArea.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { relativeDate } from '@/Utilities/date.js';
 import { useConfirm } from '@/Utilities/Composables/useConfirm';
@@ -49,41 +48,67 @@ const commentTextAreaRef = ref(null);
 // ============================================================================
 // Methods - 方法
 // ============================================================================
-// 提交新留言到伺服器
+// ---------------------------------------------------------------------------
+// 提交留言：submitComment
+// - 使用 Inertia 的 POST 請求將留言送到後端
+// - 成功時清空表單欄位（避免殘留舊內容）
+// - 使用 `preserveScroll: true` 避免頁面跳動，改善 UX
+// ---------------------------------------------------------------------------
 const submitComment = () => {
     commentForm.post(route('posts.comments.store', props.post.id), {
         onSuccess: () => {
-            commentForm.reset(); // 成功後清空表單
+            commentForm.reset();
         },
-        preserveScroll: true, // 提交後保持頁面捲動位置
+        preserveScroll: true,
     });
 };
 
 const { confirmation } = useConfirm();
 
-// 刪除指定的留言
+// ---------------------------------------------------------------------------
+// 刪除留言：deleteComment
+// 流程：
+// 1. 顯示確認對話框（使用 useConfirm），若使用者取消則中止
+// 2. 計算要傳給刪除路由的 page 參數：
+//    - 若當前頁面上仍有多於 1 則留言，則保留目前頁碼（不改變分頁）
+//    - 否則刪除後可能造成本頁為空，回到前一頁（最小為 1）
+// 3. 使用 Inertia 的 `router.delete` 呼叫刪除 API，並加上 `preserveScroll` 選項
+// ---------------------------------------------------------------------------
 const deleteComment = async (commentId) => {
     if (!await confirmation('確定刪除這則留言?')) {
         return;
     }
 
+    // props.comments.data 為目前頁的留言陣列，props.comments.meta.current_page 為頁碼
+    const targetPage = props.comments.data.length > 1
+        ? props.comments.meta.current_page
+        : Math.max(props.comments.meta.current_page - 1, 1);
 
     router.delete(route('comments.destroy', {
         comment: commentId,
-        page: props.comments.meta.current_page, // 保持在同一頁
+        page: targetPage,
     }), {
+        // 保持滾動位置，避免頁面跳動
         preserveScroll: true,
     });
 };
 
-// 進入編輯模式：載入要編輯的留言內容到表單
+// ---------------------------------------------------------------------------
+// 編輯留言：editComment
+// - 設定要編輯的留言 ID，將該留言內容載入表單，並將游標聚焦到輸入框
+// ---------------------------------------------------------------------------
 const editComment = (commentId) => {
-    commentIdBeingEdited.value = commentId;            // 設定編輯的留言ID
-    commentForm.body = commentBedingEdit.value?.body;  // 載入該留言的內容
-    commentTextAreaRef.value?.focus();               // 聚焦到留言輸入框
+    commentIdBeingEdited.value = commentId;
+    commentForm.body = commentBedingEdit.value?.body;
+    commentTextAreaRef.value?.focus();
 };
 
-// 更新編輯的留言內容到伺服器
+// ---------------------------------------------------------------------------
+// 更新留言：updateComment
+// - 顯示確認對話，使用者確認後以 PUT 更新指定留言
+// - 成功後呼叫 cancelEditComment 恢復狀態
+// - 使用 preserveScroll 保持使用者視窗位置
+// ---------------------------------------------------------------------------
 const updateComment = async () => {
     if (!await confirmation('希望更新這則留言?')) {
         commentTextAreaRef.value?.focus();
@@ -94,15 +119,18 @@ const updateComment = async () => {
         comment: commentIdBeingEdited.value,
         page: props.comments.meta.current_page,
     }), {
-        onSuccess: cancelEditComment, // 成功後取消編輯狀態
+        onSuccess: cancelEditComment,
         preserveScroll: true,
     });
 };
 
-// 取消編輯：清空編輯狀態和表單
+// ---------------------------------------------------------------------------
+// 取消編輯：cancelEditComment
+// - 清除編輯 ID 並重置表單，恢復新增留言模式
+// ---------------------------------------------------------------------------
 const cancelEditComment = () => {
-    commentIdBeingEdited.value = null; // 清空編輯的留言ID
-    commentForm.reset();               // 清空表單內容
+    commentIdBeingEdited.value = null;
+    commentForm.reset();
 };
 </script>
 
@@ -145,7 +173,7 @@ const cancelEditComment = () => {
                         <div class="mt-4">
                             <InputLabel for="body" class="sr-only">Comment</InputLabel>
                             <MarkdownEditor ref="commentTextAreaRef" v-model="commentForm.body"
-                                editorClass="min-h-[150px]" class="w-full border rounded-md p-2 mt-1"
+                                editorClass="!min-h-[150px]" class="w-full border rounded-md p-2 mt-1"
                                 placeholder="輸入您的留言..." required />
                         </div>
                         <!-- 提交和取消按鈕 -->

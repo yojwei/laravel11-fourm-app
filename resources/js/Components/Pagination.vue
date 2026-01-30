@@ -57,4 +57,6 @@ const props = defineProps({
         default: () => []
     }
 })
+
+const only = props.only.length === 0 ? [] : [...props.only, 'jetstream'];
 </script>
