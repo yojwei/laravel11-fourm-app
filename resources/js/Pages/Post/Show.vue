@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { useForm, router, Link } from '@inertiajs/vue3';
+import { useForm, router, Link, Head } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Container from '@/Components/Container.vue';
 import Comment from '@/Components/Comment.vue';
@@ -135,6 +135,10 @@ const cancelEditComment = () => {
 </script>
 
 <template>
+
+    <Head>
+        <link rel="canonical" :href="post?.routes.show" />
+    </Head>
     <AppLayout :title="post.title">
         <Container>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
