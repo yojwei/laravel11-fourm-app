@@ -20,8 +20,16 @@ class LikeFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'likeable_type' => $this->likeableType(...),
             'likeable_id' => Post::factory(),
-            'likeable_type' => Post::class,
         ];
+    }
+
+    public function likeableType(array $values)
+    {
+        $type = $values['likeable_id'];
+        $modelName = $type instanceof Factory ? $type->modelName() : $type::class;
+
+        return (new $modelName)->getMorphClass();
     }
 }
