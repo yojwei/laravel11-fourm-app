@@ -151,9 +151,7 @@ const cancelEditComment = () => {
                         </Link>
 
                     </PageHeading>
-                    <span> {{ post.likes_count }} <i :class="[
-                        post.likes_count > 0 ? 'ri-heart-fill text-red-500' : 'ri-heart-line'
-                    ]"></i> </span>
+                    <span> {{ post.likes_count }} likes</span>
                     <!-- 貼文發布時間和作者 -->
                     <span class="block px-6 pb-4 text-gray-500 text-right">
                         {{ formattedDate(post.created_at) }}
