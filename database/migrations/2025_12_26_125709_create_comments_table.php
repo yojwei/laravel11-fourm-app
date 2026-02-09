@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\User::class)->constrained()->restrictOnDelete();
             $table->foreignIdFor(\App\Models\Post::class)->constrained()->cascadeOnDelete();
             $table->longText('body');
+            $table->bigInteger('likes_count')->unsigned()->default(0);
             $table->timestamps();
         });
     }
