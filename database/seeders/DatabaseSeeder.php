@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         // 新增一個測試用戶
-        User::factory()
+        $testUser = User::factory()
             ->has(Post::factory(50)->recycle($topics)->withFixture())
             ->has(Comment::factory(120)->recycle($posts))
             ->has(Like::factory(100)->forEachSequence(
@@ -40,5 +40,13 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Test User',
                 'email' => 'test@example.com',
             ]);
+
+        // 新增 comment
+        Comment::factory(100)
+            ->has(Like::factory(100)->forEachSequence(
+                ...$testUser->posts->random(10)->map(fn(Post $post) => ['likeable_id' => $post])
+            ))
+            ->recycle([$users, $testUser->posts])
+            ->create();
     }
 }

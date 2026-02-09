@@ -14,6 +14,8 @@ class Comment extends Model
     use HasFactory;
     use ConvertsMarkdownToHtml;
 
+    protected $withCount = ['likes'];
+
     protected $fillable = [
         'body',
         'post_id',
