@@ -18,6 +18,17 @@ class Like extends Model
         'likeable_type',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (Like $like) {
+            $like->likeable()->increment('likes_count');
+        });
+
+        static::deleted(function (Like $like) {
+            $like->likeable()->decrement('likes_count');
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
