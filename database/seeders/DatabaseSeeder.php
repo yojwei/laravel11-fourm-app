@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         // 新增一個測試用戶
         User::factory()
             ->has(Post::factory(50)->recycle($topics)->withFixture())
-            ->has(Comment::factory(200)->recycle($posts))
+            ->has(Comment::factory(120)->recycle($posts))
             ->has(Like::factory(100)->forEachSequence(
                 ...$posts->random(100)->map(fn(Post $post) => ['likeable_id' => $post])
             ))      // recycle 貼文讚，因為隨機抽取的關係會造成重複的錯誤
