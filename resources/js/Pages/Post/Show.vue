@@ -144,21 +144,22 @@ const cancelEditComment = () => {
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <!-- 貼文標題和元資訊區域 -->
                 <div>
-
                     <!-- 貼文標題 -->
                     <PageHeading>{{ post.title }}
                         <Link class="badge badge-red text-2xl" :href="route('posts.index', { topic: post.topic.slug })">
-                            {{
-                                post.topic.name }}
+                            {{ post.topic.name }}
                         </Link>
+
                     </PageHeading>
+                    <span> {{ post.likes_count }} <i :class="[
+                        post.likes_count > 0 ? 'ri-heart-fill text-red-500' : 'ri-heart-line'
+                    ]"></i> </span>
                     <!-- 貼文發布時間和作者 -->
                     <span class="block px-6 pb-4 text-gray-500 text-right">
                         {{ formattedDate(post.created_at) }}
                         <span class="font-bold text-gray-700">by {{ post.user.name }}</span>
                     </span>
                 </div>
-
                 <hr />
 
                 <!-- 貼文內容區域 -->

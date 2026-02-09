@@ -17,6 +17,8 @@ class Post extends Model
     use HasFactory;
     use ConvertsMarkdownToHtml;
 
+    protected $withCount = ['likes'];
+
     protected $fillable = [
         'user_id',
         'topic_id',
