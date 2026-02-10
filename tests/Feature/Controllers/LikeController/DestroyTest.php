@@ -77,14 +77,7 @@ class DestroyTest extends TestCase
     public function test_it_only_delete_supported_models()
     {
         $this->withExceptionHandling();
-        $model = Post::factory()->create();
         $user = $this->signInAsUser();
-
-        Like::factory()->create([
-            'user_id' => $user->id,
-            'likeable_id' => $model->id,
-            'likeable_type' => $model->getMorphClass(),
-        ]);
 
         $this->post(route('likes.destroy', [$user->getMorphClass(), $user->id]))
             ->assertForbidden();
@@ -93,14 +86,7 @@ class DestroyTest extends TestCase
     public function test_it_only_allows_valid_type()
     {
         $this->withExceptionHandling();
-        $model = Post::factory()->create();
-        $user = $this->signInAsUser();
-
-        Like::factory()->create([
-            'user_id' => $user->id,
-            'likeable_id' => $model->id,
-            'likeable_type' => $model->getMorphClass(),
-        ]);
+        $this->signInAsUser();
 
         $this->post(route('likes.destroy', ['invalid-type', 123]))
             ->assertNotFound();
