@@ -26,6 +26,8 @@ Route::middleware([
 
     Route::resource('posts.comments', CommentController::class)->shallow();
     Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['create', 'store']);
+
+    Route::post('likes/{type}/{id}', [\App\Http\Controllers\LikeController::class, 'store'])->name('likes.store');
 });
 
 Route::get('/posts/{topic?}', [\App\Http\Controllers\PostController::class, 'index'])->name('posts.index');
