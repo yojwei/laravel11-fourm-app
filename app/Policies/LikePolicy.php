@@ -50,9 +50,13 @@ class LikePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Like $like): bool
+    public function delete(User $user, Model $likeable): bool
     {
-        return false;
+        if (! in_array($likeable::class, [Post::class, Comment::class])) {
+            return false;
+        }
+
+        return $likeable->likes()->whereBelongsTo($user)->exists();
     }
 
     /**
