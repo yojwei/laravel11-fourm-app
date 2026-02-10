@@ -44,6 +44,22 @@ class StoreTest extends TestCase
         $this->assertEquals(1, $model->refresh()->likes_count);
     }
 
+    public function test_if_allowed_to_like_a_likeable_model_only_once()
+    {
+        $model = Post::factory()->create();
+        $this->signInAsUser();
+        $this->withExceptionHandling();
+
+        $this->post(route('likes.store', [$model->getMorphClass(), $model->id]))
+            ->assertRedirect();
+
+        $this->post(route('likes.store', [$model->getMorphClass(), $model->id]))
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('likes', 1);
+        $this->assertEquals(1, $model->refresh()->likes_count);
+    }
+
     public static function modelProvider()
     {
         return [
