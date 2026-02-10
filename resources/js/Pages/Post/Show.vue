@@ -151,7 +151,15 @@ const cancelEditComment = () => {
                         </Link>
 
                     </PageHeading>
-                    <span> {{ post.likes_count }} likes</span>
+
+                    <div class="flex gap-3">
+                        <Link v-if="post.can.like" :href="route('likes.store', ['post', post.id])" method="post"><i
+                                class="ri-heart-line"></i></Link>
+                        <Link v-if="post.can.unlike" :href="route('likes.destroy', ['post', post.id])" method="delete">
+                            <i class="ri-heart-fill text-red-600"></i>
+                        </Link>
+                        <span> {{ post.likes_count }} likes</span>
+                    </div>
                     <!-- 貼文發布時間和作者 -->
                     <span class="block px-6 pb-4 text-gray-500 text-right">
                         {{ formattedDate(post.created_at) }}
