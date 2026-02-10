@@ -27,6 +27,7 @@ class PostFactory extends Factory
             'topic_id' => \App\Models\Topic::factory(),
             'title' => Str(fake()->sentence())->title()->beforeLast('.'),
             'body' => Collection::times(4, fn() => fake()->realText(1250))->join(PHP_EOL . PHP_EOL),
+            'likes_count' => 0,
         ];
     }
 

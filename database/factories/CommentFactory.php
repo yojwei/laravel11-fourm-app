@@ -19,7 +19,8 @@ class CommentFactory extends Factory
         return [
             'user_id' =>  \App\Models\User::factory(),
             'post_id' =>  \App\Models\Post::factory(),
-            'body' => fake()->realText(200)
+            'body' => fake()->realText(200),
+            'likes_count' => 0,
         ];
     }
 }
