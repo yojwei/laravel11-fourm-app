@@ -153,11 +153,13 @@ const cancelEditComment = () => {
                     </PageHeading>
 
                     <div class="flex gap-3">
-                        <Link v-if="post.can.like" :href="route('likes.store', ['post', post.id])" method="post"><i
-                                class="ri-heart-line"></i></Link>
-                        <Link v-if="post.can.unlike" :href="route('likes.destroy', ['post', post.id])" method="delete">
-                            <i class="ri-heart-fill text-red-600"></i>
-                        </Link>
+                        <div v-if="$page.props.auth.user">
+                            <Link v-if="post.can.like" :href="route('likes.store', ['post', post.id])" method="post"><i
+                                    class="ri-heart-line"></i></Link>
+                            <Link v-else :href="route('likes.destroy', ['post', post.id])" method="delete">
+                                <i class="ri-heart-fill text-red-600"></i>
+                            </Link>
+                        </div>
                         <span> {{ post.likes_count }} likes</span>
                     </div>
                     <!-- 貼文發布時間和作者 -->

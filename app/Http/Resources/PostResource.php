@@ -9,6 +9,15 @@ use Illuminate\Support\Number;
 
 class PostResource extends JsonResource
 {
+    private bool $withLikePermission = false;
+
+    function withLikePermission(): self
+    {
+        $this->withLikePermission = true;
+
+        return $this;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -30,8 +39,7 @@ class PostResource extends JsonResource
                 'show' => $this->showRoute(),
             ],
             'can' => [
-                'like' => $request->user()?->can('create', [Like::class, $this->resource]) ?? false,
-                'unlike' => $request->user()?->can('delete', [Like::class, $this->resource]) ?? false,
+                'like' => $this->when($this->withLikePermission, fn() => $request->user()?->can('create', [Like::class, $this->resource])),
             ],
         ];
     }
