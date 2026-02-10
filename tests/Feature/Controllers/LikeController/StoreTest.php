@@ -60,6 +60,15 @@ class StoreTest extends TestCase
         $this->assertEquals(1, $model->refresh()->likes_count);
     }
 
+    public function test_it_only_liking_supported_models()
+    {
+        $user = $this->signInAsUser();
+        $this->withExceptionHandling();
+
+        $this->post(route('likes.store', [$user->getMorphClass(), $user->id]))
+            ->assertForbidden();
+    }
+
     public static function modelProvider()
     {
         return [
