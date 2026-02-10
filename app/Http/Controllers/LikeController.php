@@ -30,7 +30,12 @@ class LikeController extends Controller
      */
     public function store(Request $request, string $type, int $id)
     {
-        $likeable = Relation::getMorphedModel($type)::findOrFail($id);   // post or comment
+        $morphedModel = Relation::getMorphedModel($type);
+        if (! $morphedModel) {
+            abort(404);
+        }
+
+        $likeable = $morphedModel::findOrFail($id);   // post or comment
         Gate::authorize('create', [Like::class, $likeable]);
 
         $likeable->likes()->create([

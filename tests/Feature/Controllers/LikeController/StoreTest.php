@@ -69,6 +69,15 @@ class StoreTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_it_only_allows_valid_type()
+    {
+        $user = $this->signInAsUser();
+        $this->withExceptionHandling();
+
+        $this->post(route('likes.store', ['invalid-type', 123]))
+            ->assertNotFound();
+    }
+
     public static function modelProvider()
     {
         return [
