@@ -30,12 +30,7 @@ class LikeController extends Controller
      */
     public function store(Request $request, string $type, int $id)
     {
-        $morphedModel = Relation::getMorphedModel($type);
-        if (! $morphedModel) {
-            abort(404);
-        }
-
-        $likeable = $morphedModel::findOrFail($id);   // post or comment
+        $likeable = $this->findLikeableModel($type, $id);
         Gate::authorize('create', [Like::class, $likeable]);
 
         $likeable->likes()->create([
@@ -74,12 +69,7 @@ class LikeController extends Controller
      */
     public function destroy(Request $request, string $type, int $id)
     {
-        $morphedModel = Relation::getMorphedModel($type);
-        if (! $morphedModel) {
-            abort(404);
-        }
-
-        $likeable = $morphedModel::findOrFail($id);   // post or comment
+        $likeable = $this->findLikeableModel($type, $id);
         Gate::authorize('delete', [Like::class, $likeable]);
 
         Like::where([
@@ -89,5 +79,17 @@ class LikeController extends Controller
         ])->firstOrFail()->delete();
 
         return back();
+    }
+
+    private function findLikeableModel($type, $id)
+    {
+        $morphedModel = Relation::getMorphedModel($type);
+        if (! $morphedModel) {
+            abort(404);
+        }
+
+        $likeable = $morphedModel::findOrFail($id);   // post or comment
+
+        return $likeable;
     }
 }
