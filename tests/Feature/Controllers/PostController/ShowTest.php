@@ -27,7 +27,7 @@ class ShowTest extends TestCase
         $post->load(['user', 'topic']);
 
         $response = $this->get($post->showRoute());
-        $response->assertHasResource('post', PostResource::make($post));
+        $response->assertHasResource('post', PostResource::make($post)->withLikePermission());
     }
 
     /**
@@ -45,8 +45,11 @@ class ShowTest extends TestCase
 
         $comments->load('user');
 
+        $expecetedComments = CommentResource::collection($comments->reverse());
+        $expecetedComments->collection->each->withLikePermission();
+
         $response = $this->get($posts->showRoute());
-        $response->assertHasPaginatedResource('comments', CommentResource::collection($comments->reverse()));
+        $response->assertHasPaginatedResource('comments', $expecetedComments);
     }
 
     /** 重定向舊的或不正確的 URL */
