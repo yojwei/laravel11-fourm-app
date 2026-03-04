@@ -1,5 +1,6 @@
 <script setup>
 import { relativeDate } from "@/Utilities/date.js";
+import { Link } from "@inertiajs/vue3";
 
 defineProps(['comment']);
 const emit = defineEmits(['delete', 'edit']);
@@ -12,8 +13,19 @@ const emit = defineEmits(['delete', 'edit']);
         </div>
         <div class="flex-1">
             <div v-html="comment.html" class="prose prose-sm max-w-none"></div>
-            <span class="first-letter:uppercase block pt-1 text-xs text-gray-600">By {{ comment.user.name }} {{
-                relativeDate(comment.created_at) }} | {{ comment.likes_count }} likes</span>
+            <div class="flex gap-1">
+                <span class="first-letter:uppercase block pt-1 text-xs text-gray-600">By {{
+                    comment.user.name }} {{
+                        relativeDate(comment.created_at) }} | {{ comment.likes_count }} likes</span>
+                <div v-if="$page.props.auth.user">
+                    <Link v-if="comment.can.like" preserve-scroll :href="route('likes.store', ['comment', comment.id])"
+                        method="post"><i class="ri-heart-line"></i></Link>
+                    <Link v-else preserve-scroll :href="route('likes.destroy', ['comment', comment.id])"
+                        method="delete">
+                        <i class="ri-heart-fill text-red-600"></i>
+                    </Link>
+                </div>
+            </div>
             <div class="mt-1 empty:hidden flex justify-end space-x-2">
                 <form @submit.prevent="$emit('edit', comment.id)" v-if="comment.can?.update">
                     <button class="bg-indigo-500 text-white px-2 py-1 rounded">Edit</button>
