@@ -21,6 +21,7 @@ const formattedDate = (date) => { return relativeDate(date); };
 
 const searchForm = useForm({
     search: props.query,
+    page: 1
 });
 
 const page = usePage();
