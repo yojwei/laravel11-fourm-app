@@ -31,7 +31,8 @@ class PostController extends Controller
             ) // /posts?search={keyword}
             ->latest()
             ->latest('id')
-            ->paginate();
+            ->paginate()
+            ->withQueryString();
 
         return inertia('Post/Index', [
             'posts' => fn() => PostResource::collection($posts),

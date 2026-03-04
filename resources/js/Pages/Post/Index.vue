@@ -8,6 +8,7 @@ import PageHeading from '@/Components/PageHeading.vue'
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 
 const props = defineProps({
     'posts': Object,
@@ -22,8 +23,15 @@ const searchForm = useForm({
     search: props.query,
 });
 
+const page = usePage();
+
 const search = () => {
-    searchForm.get(route('posts.index'));
+    searchForm.get(page.url);
+};
+
+const clearSearch = () => {
+    searchForm.search = '';
+    search();
 };
 </script>
 
@@ -38,13 +46,13 @@ const search = () => {
 
                 <menu class="flex flex-wrap gap-2 my-4">
                     <li>
-                        <Link :href="route('posts.index')" class="badge text-xl"
+                        <Link :href="route('posts.index', { search: searchForm.search, })" class="badge text-xl"
                             :class="[!selectedTopic ? 'badge-red' : 'badge-blue']"> All Posts </Link>
                     </li>
                     <li v-for="topic in topics" :key="topic.id">
                         <Link class="badge text-xl"
                             :class="[selectedTopic?.id == topic.id ? 'badge-red' : 'badge-blue']"
-                            :href="route('posts.index', { topic: topic.slug })">{{
+                            :href="route('posts.index', { search: searchForm.search, topic: topic.slug })">{{
                                 topic.name }}
                         </Link>
                     </li>
@@ -57,6 +65,7 @@ const search = () => {
                         <TextInput v-model="searchForm.search" placeholder="Search posts..." class="w-full"
                             id="search" />
                         <SecondaryButton type="submit">Search</SecondaryButton>
+                        <DangerButton v-if="searchForm.search" @click="clearSearch">Clear</DangerButton>
                     </div>
                 </div>
             </form>
