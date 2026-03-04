@@ -27,8 +27,7 @@ class PostController extends Controller
             ->when($topic, fn(Builder $query) => $query->whereBelongsTo($topic))
             ->when(
                 request()->query('search'),
-                fn(Builder $query) => $query->where('title', 'like', '%' . request()->query('search') . '%')
-                    ->orWhere('body', 'like', '%' . request()->query('search') . '%')
+                fn(Builder $query) => $query->whereAny(['title', 'body'], 'like', '%' . request()->query('search') . '%')
             ) // /posts?search={keyword}
             ->latest()
             ->latest('id')
