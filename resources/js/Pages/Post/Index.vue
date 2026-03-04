@@ -2,9 +2,12 @@
 import Container from '@/Components/Container.vue';
 import Pagination from '@/Components/Pagination.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { relativeDate } from "@/Utilities/date.js";
 import PageHeading from '@/Components/PageHeading.vue'
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 defineProps({
     'posts': Object,
@@ -13,6 +16,17 @@ defineProps({
 });
 
 const formattedDate = (date) => { return relativeDate(date); };
+
+const searchForm = useForm({
+    search: '',
+});
+
+const search = () => {
+    searchForm.get(route('posts.index', { search: searchForm.search }), {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -38,6 +52,15 @@ const formattedDate = (date) => { return relativeDate(date); };
                     </li>
                 </menu>
             </div>
+            <form class="flex gap-2" @submit.prevent="search">
+                <div class="w-full my-2">
+                    <InputLabel>Search</InputLabel>
+                    <div class="flex space-x-2">
+                        <TextInput v-model="searchForm.search" placeholder="Search posts..." class="w-full" />
+                        <SecondaryButton type="submit">Search</SecondaryButton>
+                    </div>
+                </div>
+            </form>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <ul class="divide-y">
                     <li v-for="post in posts.data" :key="post.id" class="px-4 py-2">
