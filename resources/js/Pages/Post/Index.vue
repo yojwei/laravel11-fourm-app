@@ -2,30 +2,28 @@
 import Container from '@/Components/Container.vue';
 import Pagination from '@/Components/Pagination.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { relativeDate } from "@/Utilities/date.js";
 import PageHeading from '@/Components/PageHeading.vue'
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-defineProps({
+const props = defineProps({
     'posts': Object,
     'selectedTopic': Object,
     'topics': Array,
+    'query': String,
 });
 
 const formattedDate = (date) => { return relativeDate(date); };
 
 const searchForm = useForm({
-    search: '',
+    search: props.query,
 });
 
 const search = () => {
-    searchForm.get(route('posts.index', { search: searchForm.search }), {
-        preserveState: true,
-        preserveScroll: true,
-    });
+    searchForm.get(route('posts.index'));
 };
 </script>
 
@@ -56,7 +54,8 @@ const search = () => {
                 <div class="w-full my-2">
                     <InputLabel>Search</InputLabel>
                     <div class="flex space-x-2">
-                        <TextInput v-model="searchForm.search" placeholder="Search posts..." class="w-full" />
+                        <TextInput v-model="searchForm.search" placeholder="Search posts..." class="w-full"
+                            id="search" />
                         <SecondaryButton type="submit">Search</SecondaryButton>
                     </div>
                 </div>

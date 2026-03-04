@@ -37,6 +37,7 @@ class PostController extends Controller
             'posts' => fn() => PostResource::collection($posts),
             'topics' => fn() => TopicResource::collection(Topic::all()),
             'selectedTopic' => fn() => $topic ? TopicResource::make($topic) : null,
+            'query' => request()->query('search', ''),
         ]);
     }
 
