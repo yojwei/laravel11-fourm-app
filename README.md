@@ -1,66 +1,175 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel 11 Forum App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-featured forum application built with Laravel 11, Vue 3, and Inertia.js. Supports topic-based post categorisation, rich-text editing, comments, likes, full-text search, and user authentication with 2FA.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Layer | Technology |
+|---|---|
+| Backend | PHP 8.2+, Laravel 11, Laravel Jetstream, Laravel Fortify |
+| Frontend | Vue 3, Inertia.js, Tailwind CSS, Tiptap (rich-text editor) |
+| Database | SQLite (default) / MySQL / PostgreSQL |
+| Search | Meilisearch via Laravel Scout |
+| Build | Vite |
+| Testing | PHPUnit 11 (SQLite in-memory) |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Posts** – Create, list, and view posts with Markdown/rich-text body (auto-converted to HTML via Tiptap)
+- **Topics** – Posts are categorised into topics (General, Technology, Gaming, etc.)
+- **Comments** – Create, edit, and delete comments on posts
+- **Likes** – Polymorphic like/unlike for posts and comments
+- **Full-text search** – Powered by Meilisearch (Laravel Scout)
+- **Authentication** – Registration, login, email verification, password reset, 2FA (via Jetstream/Fortify)
+- **API tokens** – Personal access token management
 
-## Learning Laravel
+## Project Structure
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+app/
+  Http/Controllers/   # PostController, CommentController, LikeController
+  Models/             # Post, Comment, Topic, Like, User
+    Concerns/         # ConvertsMarkdownToHtml
+  Policies/           # PostPolicy, CommentPolicy, LikePolicy
+  Providers/          # AppServiceProvider, FortifyServiceProvider, JetstreamServiceProvider, TestingServiceProvider
+  Support/            # PostFixtures (dev fixture data)
+database/
+  migrations/         # All DB migrations
+  seeders/            # DatabaseSeeder, TopicSeeder, LikeLoadTestSeeder
+  factories/          # Model factories for testing/seeding
+resources/
+  js/
+    Pages/            # Inertia Vue pages (Post/, Profile/, Auth/, Dashboard, etc.)
+    Components/       # Shared Vue components
+    Layouts/          # App layout
+  css/app.css
+routes/
+  web.php             # Main web routes
+  api.php             # API routes
+  local.php           # Local-only dev routes
+tests/
+  Feature/
+    Controllers/      # PostController, CommentController, LikeController tests
+    Models/           # Post, Comment model tests
+    (+ Jetstream auth tests)
+  Unit/
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
 
-## Laravel Sponsors
+- PHP 8.2+
+- Composer
+- Node.js 18+
+- Meilisearch (optional – only needed for search; can be disabled)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Steps
 
-### Premium Partners
+```bash
+# 1. Clone the repository
+git clone <repo-url>
+cd laravel11-forum-app
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# 2. Install PHP dependencies
+composer install
 
-## Contributing
+# 3. Install JS dependencies
+npm install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 4. Set up environment
+cp .env.example .env
+php artisan key:generate
 
-## Code of Conduct
+# 5. Create the SQLite database
+touch database/database.sqlite
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 6. Run migrations
+php artisan migrate
 
-## Security Vulnerabilities
+# 7. (Optional) Seed with demo data
+php artisan db:seed
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 8. Link storage
+php artisan storage:link
+```
+
+### Meilisearch (optional)
+
+If you want full-text search, start a Meilisearch instance and set these values in `.env`:
+
+```env
+SCOUT_DRIVER=meilisearch
+MEILISEARCH_HOST=http://127.0.0.1:7700
+MEILISEARCH_KEY=masterkey
+```
+
+To disable search entirely, set `SCOUT_DRIVER=null` in `.env`.
+
+## Development
+
+Start all services in one command (PHP server + queue worker + log tail + Vite):
+
+```bash
+composer run dev
+```
+
+Or start each service separately:
+
+```bash
+php artisan serve          # PHP dev server on http://localhost:8000
+npm run dev                # Vite HMR
+php artisan queue:listen   # Queue worker
+php artisan pail           # Log viewer
+```
+
+### Local dev route
+
+A local-only endpoint for fetching random post fixture content:
+
+```
+GET /post-content   →  returns random fixture markdown
+```
+
+## Building for Production
+
+```bash
+npm run build
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+## Testing
+
+Tests use SQLite in-memory database; no external services needed.
+
+```bash
+# Run all tests
+php artisan test
+
+# Run a specific suite
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+
+# Run a specific file
+php artisan test tests/Feature/Controllers/PostController/IndexTest.php
+```
+
+Test coverage areas:
+- `tests/Feature/Controllers/` – PostController (index, show, create, store), CommentController (store, edit, destroy), LikeController (store, destroy)
+- `tests/Feature/Models/` – Post, Comment model behaviour
+- `tests/Feature/` – Auth flows (registration, login, 2FA, password reset, API tokens, etc.)
+
+## Default Seeded Data
+
+Running `php artisan db:seed` creates:
+
+- 10 predefined **topics** (General, Reviews, Technology, Lifestyle, Announcements, Support, Jobs, Events, Photography, Gaming)
+- 10 random **users**
+- 200 **posts** (with 18 comments each)
+- A test user: `test@example.com` / `password` with 50 posts, 120 comments, and 100 likes
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
