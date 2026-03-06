@@ -23,22 +23,26 @@ class PostController extends Controller
     {
         Gate::authorize('viewAny', Post::class);
 
-        $posts = Post::with(['user', 'topic'])
-            ->when($topic, fn(Builder $query) => $query->whereBelongsTo($topic))
-            ->when(
-                request()->query('search'),
-                fn(Builder $query) => $query->whereAny(['title', 'body'], 'like', '%' . request()->query('search') . '%')
-            ) // /posts?search={keyword}
-            ->latest()
-            ->latest('id')
-            ->paginate()
-            ->withQueryString();
+        if (request()->query('search')) {
+            $posts = Post::search(request()->query('search'))
+                ->query(fn(Builder $query) => $query->with(['user', 'topic']))
+                ->when($topic, fn(\Laravel\Scout\Builder $query) => $query->where('topic_id', $topic->id));
+        } else {
+            $posts = Post::with(['user', 'topic'])
+                ->when($topic, fn(Builder $query) => $query->whereBelongsTo($topic))
+                ->when(
+                    request()->query('search'),
+                    fn(Builder $query) => $query->whereAny(['title', 'body'], 'like', '%' . request()->query('search') . '%')
+                ) // /posts?search={keyword}
+                ->latest()
+                ->latest('id');
+        }
 
         return inertia('Post/Index', [
-            'posts' => fn() => PostResource::collection($posts),
+            'posts' => fn() => PostResource::collection($posts->paginate()->withQueryString()),
             'topics' => fn() => TopicResource::collection(Topic::all()),
             'selectedTopic' => fn() => $topic ? TopicResource::make($topic) : null,
-            'query' => request()->query('search', ''),
+            'search' => request()->query('search', ''),
         ]);
     }
 

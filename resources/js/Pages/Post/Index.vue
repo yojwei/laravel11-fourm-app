@@ -14,13 +14,13 @@ const props = defineProps({
     'posts': Object,
     'selectedTopic': Object,
     'topics': Array,
-    'query': String,
+    'search': String,
 });
 
 const formattedDate = (date) => { return relativeDate(date); };
 
 const searchForm = useForm({
-    search: props.query,
+    search: props.search,
     page: 1
 });
 
